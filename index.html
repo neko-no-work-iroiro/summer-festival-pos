@@ -23,7 +23,6 @@
       flex-direction: column; 
       min-height: 100vh; 
       gap: 8px; 
-      padding-bottom: 75px; /* フローティングボタンと被らないよう下部余白を確保 */
     }
     h1 { text-align: center; font-size: 1rem; color: #333; margin: 2px 0; }
     
@@ -47,7 +46,7 @@
     /* 金額ライン（3カラム構造で位置を完全に固定） */
     .price-row { 
       display: grid; 
-      grid-template-columns: 85px 1fr auto; /* ラベル幅固定 / 数字可変 / 円固定 */
+      grid-template-columns: 85px 1fr auto; 
       align-items: center; 
       font-size: 1.2rem; 
       font-weight: bold; 
@@ -58,34 +57,13 @@
     .price-row .value { 
       text-align: right; 
       padding-right: 8px; 
-      font-variant-numeric: tabular-nums; /* 数字の横幅を均等化 */
+      font-variant-numeric: tabular-nums; 
     }
     .price-row .unit { text-align: right; }
 
     .total-row { color: #d32f2f; border-top: 1px dashed #eee; margin-top: 4px; padding-top: 6px; }
     .deposit-row { color: #1976d2; }
     .change-row { color: #2e7d32; }
-
-    /* 取り消しボタン（画面右下にフローティング固定） */
-    .btn-undo { 
-      position: fixed; 
-      bottom: 14px; 
-      right: 14px; 
-      z-index: 1000;
-      background: #ffffff; 
-      color: #d32f2f; 
-      border: 2px solid #d32f2f; 
-      border-radius: 50px; 
-      padding: 10px 16px; 
-      font-size: 0.95rem; 
-      font-weight: bold; 
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      gap: 4px; 
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-    }
-    .btn-undo:active { background: #d32f2f; color: #fff; }
 
     /* 上部：チケットエリア（2列配置） */
     .tickets-section { flex: 1; display: flex; flex-direction: column; }
@@ -104,10 +82,35 @@
     .btn-key { background: #f8f9fa; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 1.2rem; font-weight: bold; padding: 10px 0; display: flex; justify-content: center; align-items: center; cursor: pointer; }
     .btn-key:active { background: #e0e0e0; }
     .btn-key.action { background: #eceff1; font-size: 1rem; }
-    .btn-key.exact { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; font-size: 0.9rem; grid-column: span 3; padding: 8px 0; }
 
-    /* 一番下：クリアボタン */
-    .btn-clear { background: #d32f2f; color: #fff; border: none; border-radius: 8px; font-size: 1.05rem; font-weight: bold; padding: 10px 0; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; text-align: center; }
+    /* 一番下：操作ボタン（横並びエリア） */
+    .bottom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-undo-bottom { 
+      background: #ffffff; 
+      color: #d32f2f; 
+      border: 2px solid #d32f2f; 
+      border-radius: 8px; 
+      font-size: 1rem; 
+      font-weight: bold; 
+      padding: 10px 0; 
+      cursor: pointer; 
+      text-align: center; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    .btn-undo-bottom:active { background: #fff0f0; }
+    
+    .btn-clear { 
+      background: #d32f2f; 
+      color: #fff; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 1rem; 
+      font-weight: bold; 
+      padding: 10px 0; 
+      cursor: pointer; 
+      text-align: center; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
     .btn-clear:active { opacity: 0.9; }
   </style>
 </head>
@@ -141,15 +144,12 @@
     </div>
   </div>
 
-  <!-- フローティング固定表示の「1つ取消」ボタン -->
-  <button class="btn-undo" onclick="undoLastItem()">↩ 1つ取消</button>
-
   <!-- 上部：チケット選択ボタン（9種） -->
   <div class="tickets-section">
     <div class="ticket-grid">
-      <button class="btn-item" onclick="addItem('焼きそば', 200)">焼きそば<span>200円</span></button>
       <button class="btn-item" onclick="addItem('やきとり2本', 100)">やきとり2本<span>100円</span></button>
       <button class="btn-item" onclick="addItem('やきとり4本', 200)">やきとり4本<span>200円</span></button>
+      <button class="btn-item" onclick="addItem('焼きそば', 200)">焼きそば<span>200円</span></button>
       <button class="btn-item" onclick="addItem('唐揚げ', 150)">唐揚げ<span>150円</span></button>
       <button class="btn-item" onclick="addItem('ポテト', 100)">ポテト<span>100円</span></button>
       <button class="btn-item" onclick="addItem('ビール・ノンアル', 100)">ビール・ノンアル<span>100円</span></button>
@@ -176,12 +176,14 @@
       <button class="btn-key" onclick="pressNum('0')">0</button>
       <button class="btn-key" onclick="pressNum('00')">00</button>
       <button class="btn-key action" onclick="pressBackspace()">⌫</button>
-      <button class="btn-key exact" onclick="pressExact()">ちょうど (お釣り0円)</button>
     </div>
   </div>
 
-  <!-- 会計完了ボタン -->
-  <button class="btn-clear" onclick="resetAll()">会計完了 / 次の会計へ</button>
+  <!-- 一番下：横並びボタン（1つ取消 / クリア） -->
+  <div class="bottom-actions">
+    <button class="btn-undo-bottom" onclick="undoLastItem()">↩ 1つ取消</button>
+    <button class="btn-clear" onclick="resetAll()">クリア</button>
+  </div>
 
   <script>
     let total = 0;
@@ -219,11 +221,6 @@
 
     function pressBackspace() {
       depositStr = depositStr.slice(0, -1);
-      updateDisplay();
-    }
-
-    function pressExact() {
-      depositStr = total.toString();
       updateDisplay();
     }
 
