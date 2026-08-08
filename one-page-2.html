@@ -63,20 +63,21 @@
  
     .total-row { color: #d32f2f; } 
     .deposit-row { color: #1976d2; border-top: 1px dashed #eee; margin-top: 2px; padding-top: 2px; } 
-    .change-row { color: #2e7d32; font-size: 1.15rem; } 
+    /* おつりもお会計と同じ 1.05rem に統一 */ 
+    .change-row { color: #2e7d32; font-size: 1.05rem; } 
  
-    /* 上部：チケットエリア */ 
-    .tickets-section { flex: 1.2; display: flex; min-height: 0; } 
+    /* 上部：チケットエリア（比率を 1.2 -> 1.5 に拡大） */ 
+    .tickets-section { flex: 1.5; display: flex; min-height: 0; } 
     .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; height: 100%; } 
      
-    /* チケットボタン（バッジ配置用に position: relative） */ 
+    /* チケットボタン */ 
     .btn-item {  
       position: relative; 
       background: #1976d2;  
       color: #fff;  
       border: none;  
       border-radius: 6px;  
-      font-size: 0.85rem;  
+      font-size: 0.9rem; /* 文字サイズも少し拡大 */ 
       font-weight: bold;  
       padding: 0 8px;  
       display: flex;  
@@ -93,9 +94,9 @@
     .btn-item.full-width { grid-column: span 2; } 
     .btn-item span.price-tag { font-size: 0.75rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 1px 4px; border-radius: 3px; white-space: nowrap; } 
  
-    /* 注文数バッジ（右上） */ 
+    /* 注文数バッジ（初期値非表示） */ 
     .badge { 
-      display: none; /* 初期は非表示 */ 
+      display: none; 
       position: absolute; 
       top: -6px; 
       right: -6px; 
@@ -107,7 +108,6 @@
       height: 20px; 
       border-radius: 10px; 
       padding: 0 5px; 
-      display: flex; 
       justify-content: center; 
       align-items: center; 
       box-shadow: 0 2px 4px rgba(0,0,0,0.3); 
@@ -115,15 +115,15 @@
       z-index: 10; 
     } 
  
-    /* 下部：テンキーエリア */ 
-    .keypad-section { flex: 1; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
+    /* 下部：テンキーエリア（比率を 1 -> 0.85 に少し縮小） */ 
+    .keypad-section { flex: 0.85; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; height: 100%; } 
     .btn-key {  
       background: #f8f9fa;  
       color: #333;  
       border: 1px solid #ccc;  
       border-radius: 6px;  
-      font-size: 1.1rem;  
+      font-size: 1.05rem;  
       font-weight: bold;  
       display: flex;  
       justify-content: center;  
@@ -195,41 +195,41 @@
     <div class="ticket-grid"> 
       <button class="btn-item" onclick="addItem('item1', 100)"> 
         やきとり2本<span class="price-tag">100円</span> 
-        <div class="badge" id="badge-item1">0</div> 
+        <div class="badge" id="badge-item1"></div> 
       </button> 
       <button class="btn-item" onclick="addItem('item2', 200)"> 
         やきとり4本<span class="price-tag">200円</span> 
-        <div class="badge" id="badge-item2">0</div> 
+        <div class="badge" id="badge-item2"></div> 
       </button> 
       <button class="btn-item" onclick="addItem('item3', 200)"> 
         焼きそば<span class="price-tag">200円</span> 
-        <div class="badge" id="badge-item3">0</div> 
+        <div class="badge" id="badge-item3"></div> 
       </button> 
       <button class="btn-item" onclick="addItem('item4', 150)"> 
         唐揚げ<span class="price-tag">150円</span> 
-        <div class="badge" id="badge-item4">0</div> 
+        <div class="badge" id="badge-item4"></div> 
       </button> 
       <button class="btn-item" onclick="addItem('item5', 100)"> 
         ポテト<span class="price-tag">100円</span> 
-        <div class="badge" id="badge-item5">0</div> 
+        <div class="badge" id="badge-item5"></div> 
       </button> 
       <button class="btn-item" onclick="addItem('item6', 100)"> 
         ビール・ノンアル<span class="price-tag">100円</span> 
-        <div class="badge" id="badge-item6">0</div> 
+        <div class="badge" id="badge-item6"></div> 
       </button> 
        
       <!-- 共通券エリア --> 
       <button class="btn-item special" onclick="addItem('item7', 50)"> 
         共通50円×1<span class="price-tag">50円</span> 
-        <div class="badge" id="badge-item7">0</div> 
+        <div class="badge" id="badge-item7"></div> 
       </button> 
       <button class="btn-item special" onclick="addItem('item8', 250)"> 
         共通50円×5<span class="price-tag">250円</span> 
-        <div class="badge" id="badge-item8">0</div> 
+        <div class="badge" id="badge-item8"></div> 
       </button> 
       <button class="btn-item special full-width" onclick="addItem('item9', 500)"> 
         共通50円×10<span class="price-tag">500円</span> 
-        <div class="badge" id="badge-item9">0</div> 
+        <div class="badge" id="badge-item9"></div> 
       </button> 
     </div> 
   </div> 
@@ -261,7 +261,7 @@
   <script> 
     let total = 0; 
     let depositStr = ""; 
-    let items = {};  // { item1: 個数, item2: 個数, ... } 
+    let items = {}; 
     let history = []; 
  
     function addItem(id, price) { 
@@ -306,7 +306,6 @@
     } 
  
     function updateDisplay() { 
-      // 金額表示の更新 
       document.getElementById('total-price').innerText = total.toLocaleString(); 
        
       let depositVal = depositStr === "" ? 0 : parseInt(depositStr, 10); 
@@ -315,7 +314,7 @@
       let change = depositVal - total; 
       document.getElementById('change-price').innerText = (depositVal >= total && total > 0) ? change.toLocaleString() : 0; 
  
-      // 各ボタンのバッジ表示を更新（1個以上の場合は表示、0個の場合は非表示） 
+      // バッジ表示制御（1個以上のみ表示、0個なら隠す） 
       for (let i = 1; i <= 9; i++) { 
         let itemId = 'item' + i; 
         let count = items[itemId] || 0; 
@@ -325,6 +324,7 @@
           badgeEl.innerText = count; 
           badgeEl.style.display = 'flex'; 
         } else { 
+          badgeEl.innerText = ''; 
           badgeEl.style.display = 'none'; 
         } 
       } 
