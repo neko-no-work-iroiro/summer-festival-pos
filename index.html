@@ -3,21 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- PWA設定：ホーム画面追加時にアプリ感覚で全画面表示 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>夏祭り チケット会計</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
-    body { padding: 10px; background: #f4f6f8; display: flex; flex-direction: column; min-height: 100vh; gap: 8px; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      user-select: none; 
+      touch-action: manipulation; /* ダブルタップのズーム防止 */
+    }
+    body { 
+      padding: 10px; 
+      background: #f4f6f8; 
+      display: flex; 
+      flex-direction: column; 
+      min-height: 100vh; 
+      gap: 8px; 
+      padding-bottom: 75px; /* フローティングボタンと被らないよう下部余白を確保 */
+    }
     h1 { text-align: center; font-size: 1rem; color: #333; margin: 2px 0; }
     
     /* 会計表示エリア */
-    .display { background: #fff; padding: 10px 12px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); position: relative; }
-    .row { display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 2px; color: #555; padding-right: 70px; }
-    .total-row { font-size: 1.4rem; font-weight: bold; color: #d32f2f; border-top: 1px dashed #eee; padding-top: 4px; margin-top: 4px; }
-    .deposit-row { font-size: 1.1rem; font-weight: bold; color: #1976d2; }
-    .change-row { font-size: 1.3rem; font-weight: bold; color: #2e7d32; }
+    .display { 
+      background: #fff; 
+      padding: 10px 14px; 
+      border-radius: 10px; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
+    }
+    
+    /* 注文ライン */
+    .row.item-row { 
+      display: flex; 
+      justify-content: space-between; 
+      font-size: 0.9rem; 
+      color: #555; 
+      margin-bottom: 6px; 
+    }
+    
+    /* 金額ライン（3カラム構造で位置を完全に固定） */
+    .price-row { 
+      display: grid; 
+      grid-template-columns: 85px 1fr auto; /* ラベル幅固定 / 数字可変 / 円固定 */
+      align-items: center; 
+      font-size: 1.2rem; 
+      font-weight: bold; 
+      padding: 3px 0; 
+    }
 
-    /* 取り消し（1つ戻す）ボタン */
-    .btn-undo { position: absolute; top: 10px; right: 10px; background: #fff0f0; color: #d32f2f; border: 1.5px solid #d32f2f; border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .price-row .label { text-align: left; }
+    .price-row .value { 
+      text-align: right; 
+      padding-right: 8px; 
+      font-variant-numeric: tabular-nums; /* 数字の横幅を均等化 */
+    }
+    .price-row .unit { text-align: right; }
+
+    .total-row { color: #d32f2f; border-top: 1px dashed #eee; margin-top: 4px; padding-top: 6px; }
+    .deposit-row { color: #1976d2; }
+    .change-row { color: #2e7d32; }
+
+    /* 取り消しボタン（画面右下にフローティング固定） */
+    .btn-undo { 
+      position: fixed; 
+      bottom: 14px; 
+      right: 14px; 
+      z-index: 1000;
+      background: #ffffff; 
+      color: #d32f2f; 
+      border: 2px solid #d32f2f; 
+      border-radius: 50px; 
+      padding: 10px 16px; 
+      font-size: 0.95rem; 
+      font-weight: bold; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      gap: 4px; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+    }
     .btn-undo:active { background: #d32f2f; color: #fff; }
 
     /* 上部：チケットエリア（2列配置） */
@@ -26,12 +93,12 @@
     .btn-item { background: #1976d2; color: #fff; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: bold; padding: 9px 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; }
     .btn-item:active { opacity: 0.8; transform: scale(0.98); }
     
-    /* 共通券用の特別スタイル（目立つよう少し色を変更） */
+    /* 共通券用の特別スタイル */
     .btn-item.special { background: #00838f; }
     .btn-item.full-width { grid-column: span 2; }
     .btn-item span { font-size: 0.8rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 2px 5px; border-radius: 4px; white-space: nowrap; }
 
-    /* 下部：テンキー（電卓）エリア */
+    /* 下部：テンキーエリア */
     .keypad-section { background: #fff; padding: 8px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .btn-key { background: #f8f9fa; color: #333; border: 1px solid #ccc; border-radius: 6px; font-size: 1.2rem; font-weight: bold; padding: 10px 0; display: flex; justify-content: center; align-items: center; cursor: pointer; }
@@ -50,12 +117,32 @@
 
   <!-- 表示部 -->
   <div class="display">
-    <button class="btn-undo" onclick="undoLastItem()">↩ 1つ取消</button>
-    <div class="row">注文: <span id="items-list">なし</span></div>
-    <div class="row total-row">合計: <span id="total-price">0</span> 円</div>
-    <div class="row deposit-row">お預かり: <span id="deposit-price">0</span> 円</div>
-    <div class="row change-row">お返し: <span id="change-price">0</span> 円</div>
+    <div class="row item-row">
+      <span>注文:</span>
+      <span id="items-list">なし</span>
+    </div>
+    
+    <div class="price-row total-row">
+      <span class="label">合計:</span>
+      <span class="value" id="total-price">0</span>
+      <span class="unit">円</span>
+    </div>
+    
+    <div class="price-row deposit-row">
+      <span class="label">お預かり:</span>
+      <span class="value" id="deposit-price">0</span>
+      <span class="unit">円</span>
+    </div>
+    
+    <div class="price-row change-row">
+      <span class="label">お返し:</span>
+      <span class="value" id="change-price">0</span>
+      <span class="unit">円</span>
+    </div>
   </div>
+
+  <!-- フローティング固定表示の「1つ取消」ボタン -->
+  <button class="btn-undo" onclick="undoLastItem()">↩ 1つ取消</button>
 
   <!-- 上部：チケット選択ボタン（9種） -->
   <div class="tickets-section">
@@ -67,8 +154,8 @@
       <button class="btn-item" onclick="addItem('ポテト', 100)">ポテト<span>100円</span></button>
       <button class="btn-item" onclick="addItem('ビール・ノンアル', 100)">ビール・ノンアル<span>100円</span></button>
       
-      <!-- 共通券エリア（少し濃い青色にして区別） -->
-      <button class="btn-item special" onclick="addItem('共通50円', 50)">共通50円<span>50円</span></button>
+      <!-- 共通券エリア -->
+      <button class="btn-item special" onclick="addItem('共通50円×1', 50)">共通50円<span>50円</span></button>
       <button class="btn-item special" onclick="addItem('共通50円×5', 250)">共通50円×5<span>250円</span></button>
       <button class="btn-item special full-width" onclick="addItem('共通50円×10', 500)">共通50円×10<span>500円</span></button>
     </div>
