@@ -23,7 +23,6 @@
       display: flex; 
       flex-direction: column; 
       gap: 8px; 
-      /* 下に引っ張られないよう自動高さに修正 */
       min-height: auto; 
     }
     h1 { text-align: center; font-size: 1rem; color: #333; margin: 2px 0; }
@@ -36,13 +35,23 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
     }
     
-    /* 注文ライン */
+    /* 注文ライン（折り返し防止＆右詰め自動調整） */
     .row.item-row { 
       display: flex; 
-      justify-content: space-between; 
-      font-size: 0.9rem; 
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.85rem; 
       color: #555; 
       margin-bottom: 6px; 
+    }
+    .row.item-row .item-label {
+      white-space: nowrap; /* 「注文:」が絶対縦にならない設定 */
+      font-weight: bold;
+    }
+    .row.item-row .item-value {
+      flex: 1;
+      text-align: right;
+      word-break: break-all; /* 長いメニューも右側で綺麗に折り返す */
     }
     
     /* 金額ライン（3カラム構造で位置を完全に固定） */
@@ -67,7 +76,7 @@
     .deposit-row { color: #1976d2; }
     .change-row { color: #2e7d32; }
 
-    /* 上部：チケットエリア（2列配置・上に詰める設定に調整） */
+    /* 上部：チケットエリア（2列配置・上に詰める設定） */
     .tickets-section { display: flex; flex-direction: column; }
     .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .btn-item { background: #1976d2; color: #fff; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: bold; padding: 9px 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; }
@@ -123,8 +132,8 @@
   <!-- 表示部 -->
   <div class="display">
     <div class="row item-row">
-      <span>注文:</span>
-      <span id="items-list">なし</span>
+      <span class="item-label">注文:</span>
+      <span class="item-value" id="items-list">なし</span>
     </div>
     
     <div class="price-row total-row">
