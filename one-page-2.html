@@ -63,11 +63,10 @@
  
     .total-row { color: #d32f2f; } 
     .deposit-row { color: #1976d2; border-top: 1px dashed #eee; margin-top: 2px; padding-top: 2px; } 
-    /* おつりもお会計と同じ 1.05rem に統一 */ 
     .change-row { color: #2e7d32; font-size: 1.05rem; } 
  
-    /* 上部：チケットエリア（比率を 1.2 -> 1.5 に拡大） */ 
-    .tickets-section { flex: 1.5; display: flex; min-height: 0; } 
+    /* 上部：チケットエリア（比率を 1 に設定） */ 
+    .tickets-section { flex: 1; display: flex; min-height: 0; } 
     .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; height: 100%; } 
      
     /* チケットボタン */ 
@@ -77,7 +76,7 @@
       color: #fff;  
       border: none;  
       border-radius: 6px;  
-      font-size: 0.9rem; /* 文字サイズも少し拡大 */ 
+      font-size: 0.85rem;  
       font-weight: bold;  
       padding: 0 8px;  
       display: flex;  
@@ -94,7 +93,7 @@
     .btn-item.full-width { grid-column: span 2; } 
     .btn-item span.price-tag { font-size: 0.75rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 1px 4px; border-radius: 3px; white-space: nowrap; } 
  
-    /* 注文数バッジ（初期値非表示） */ 
+    /* 注文数バッジ */ 
     .badge { 
       display: none; 
       position: absolute; 
@@ -115,15 +114,15 @@
       z-index: 10; 
     } 
  
-    /* 下部：テンキーエリア（比率を 1 -> 0.85 に少し縮小） */ 
-    .keypad-section { flex: 0.85; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
+    /* 下部：テンキーエリア（比率を 1 に設定） */ 
+    .keypad-section { flex: 1; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; height: 100%; } 
     .btn-key {  
       background: #f8f9fa;  
       color: #333;  
       border: 1px solid #ccc;  
       border-radius: 6px;  
-      font-size: 1.05rem;  
+      font-size: 1.1rem;  
       font-weight: bold;  
       display: flex;  
       justify-content: center;  
@@ -314,7 +313,6 @@
       let change = depositVal - total; 
       document.getElementById('change-price').innerText = (depositVal >= total && total > 0) ? change.toLocaleString() : 0; 
  
-      // バッジ表示制御（1個以上のみ表示、0個なら隠す） 
       for (let i = 1; i <= 9; i++) { 
         let itemId = 'item' + i; 
         let count = items[itemId] || 0; 
