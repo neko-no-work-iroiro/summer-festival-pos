@@ -34,13 +34,13 @@
 
     h1 { text-align: center; font-size: 0.9rem; color: #333; margin: 0; flex-shrink: 0; }
     
-    /* 会計表示エリア */
+    /* 会計表示エリア（中身に応じて自然に広がる） */
     .display { 
       background: #fff; 
-      padding: 6px 12px; 
+      padding: 8px 12px; 
       border-radius: 8px; 
       box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
-      flex-shrink: 0;
+      flex-shrink: 0; 
     }
     
     /* 共通行スタイル */
@@ -61,7 +61,7 @@
     }
     .price-row .unit { text-align: right; }
 
-    /* 注文ライン（見切れ修正版） */
+    /* 注文ライン（スクロール排除＆完全に高さを拡張） */
     .row.item-row { 
       display: flex; 
       align-items: flex-start;
@@ -69,27 +69,31 @@
       font-size: 0.95rem; 
       font-weight: bold;
       color: #333; 
-      margin-bottom: 2px; 
-      max-height: 4.5em; /* 複数行しっかり表示 */
-      overflow-y: auto;  /* あふれたらスクロール */
+      margin-bottom: 4px; 
+      /* 高さ制限とスクロールを撤去して自動拡張 */
+      height: auto;
+      max-height: none;
+      overflow: visible; 
     }
     .row.item-row .item-label {
       white-space: nowrap;
-      width: 50px; /* ラベル幅を少し詰めて文字エリアを拡張 */
+      width: 50px;
+      flex-shrink: 0;
     }
     .row.item-row .item-value {
       flex: 1;
       text-align: right;
       word-break: break-all;
       color: #555;
+      line-height: 1.3;
     }
 
-    .total-row { color: #d32f2f; border-top: 1px dashed #eee; margin-top: 2px; padding-top: 2px; }
+    .total-row { color: #d32f2f; border-top: 1px dashed #eee; margin-top: 4px; padding-top: 4px; }
     .deposit-row { color: #1976d2; }
     .change-row { color: #2e7d32; font-size: 1.15rem; }
 
-    /* 上部：チケットエリア */
-    .tickets-section { flex: 1.2; display: flex; min-height: 0; }
+    /* 上部：チケットエリア（表示エリアが広がると自動で伸縮） */
+    .tickets-section { flex: 1.2; display: flex; min-height: 80px; }
     .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; height: 100%; }
     .btn-item { 
       background: #1976d2; 
@@ -113,8 +117,8 @@
     .btn-item.full-width { grid-column: span 2; }
     .btn-item span { font-size: 0.75rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 
-    /* 下部：テンキーエリア */
-    .keypad-section { flex: 1; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; }
+    /* 下部：テンキーエリア（表示エリアが広がると自動で伸縮） */
+    .keypad-section { flex: 1; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 100px; }
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; height: 100%; }
     .btn-key { 
       background: #f8f9fa; 
@@ -193,7 +197,7 @@
     </div>
   </div>
 
-  <!-- 上部：チケット選択ボタン（9種） -->
+  <!-- 上部：チケットエリア -->
   <div class="tickets-section">
     <div class="ticket-grid">
       <button class="btn-item" onclick="addItem('やきとり2本', 100)">やきとり2本<span>100円</span></button>
@@ -210,7 +214,7 @@
     </div>
   </div>
 
-  <!-- 下部：お預かり用テンキー -->
+  <!-- 下部：テンキーエリア -->
   <div class="keypad-section">
     <div class="keypad-grid">
       <button class="btn-key" onclick="pressNum('7')">7</button>
@@ -228,7 +232,7 @@
     </div>
   </div>
 
-  <!-- 一番下：横並びボタン（1つ取消 / クリア） -->
+  <!-- 一番下：操作ボタン -->
   <div class="bottom-actions">
     <button class="btn-undo-bottom" onclick="undoLastItem()">↩ 1つ取消</button>
     <button class="btn-clear" onclick="resetAll()">クリア</button>
