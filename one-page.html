@@ -61,21 +61,21 @@
     }
     .price-row .unit { text-align: right; }
 
-    /* 注文ライン（お会計と同じ文字サイズ 1.05rem に変更） */
+    /* 注文ライン（見切れ修正版） */
     .row.item-row { 
       display: flex; 
       align-items: flex-start;
       gap: 6px;
-      font-size: 1.05rem; 
+      font-size: 0.95rem; 
       font-weight: bold;
       color: #333; 
       margin-bottom: 2px; 
-      max-height: 2.4em;
-      overflow: hidden;
+      max-height: 4.5em; /* 複数行しっかり表示 */
+      overflow-y: auto;  /* あふれたらスクロール */
     }
     .row.item-row .item-label {
       white-space: nowrap;
-      width: 75px; /* ラベル幅を合わせる */
+      width: 50px; /* ラベル幅を少し詰めて文字エリアを拡張 */
     }
     .row.item-row .item-value {
       flex: 1;
