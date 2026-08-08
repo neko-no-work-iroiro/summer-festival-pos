@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- PWA設定 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <title>夏祭り チケット会計</title>
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      user-select: none; 
+      touch-action: manipulation;
+    }
+    body { 
+      padding: 10px; 
+      background: #f4f6f8; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      min-height: 100vh;
+    }
+    h1 { text-align: center; font-size: 1rem; color: #333; margin: 0; }
+
+    /* 会計表示エリア（共通） */
+    .display { 
+      background: #fff; 
+      padding: 10px 14px; 
+      border-radius: 10px; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); 
+    }
+    .row.item-row { 
+      display: flex; 
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.85rem; 
+      color: #555; 
+      margin-bottom: 6px; 
+    }
+    .row.item-row .item-label { white-space: nowrap; font-weight: bold; }
+    .row.item-row .item-value { flex: 1; text-align: right; word-break: break-all; }
+    
+    .price-row { 
+      display: grid; 
+      grid-template-columns: 85px 1fr auto; 
+      align-items: center; 
+      font-size: 1.2rem; 
+      font-weight: bold; 
+      padding: 2px 0; 
+    }
+    .price-row .label { text-align: left; }
+    .price-row .value { text-align: right; padding-right: 8px; font-variant-numeric: tabular-nums; }
+    .price-row .unit { text-align: right; }
+
+    .total-row { color: #d32f2f; border-top: 1px dashed #eee; margin-top: 4px; padding-top: 4px; }
+    .deposit-row { color: #1976d2; }
+    .change-row { color: #2e7d32; font-size: 1.4rem; }
+
+    /* 画面切り替え制御 */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* チケットエリア */
+    .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-item { background: #1976d2; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; padding: 12px 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; }
+    .btn-item:active { opacity: 0.8; transform: scale(0.98); }
+    .btn-item.special { background: #00838f; }
+    .btn-item.full-width { grid-column: span 2; }
+    .btn-item span { font-size: 0.85rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+
+    /* テンキーエリア */
+    .keypad-section { background: #fff; padding: 8px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+    .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .btn-key { background: #f8f9fa; color: #333; border: 1px solid #ccc; border-radius: 8px; font-size: 1.4rem; font-weight: bold; padding: 14px 0; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .btn-key:active { background: #e0e0e0; }
+    .btn-key.action { background: #eceff1; font-size: 1.2rem; }
+
+    /* 各画面の一番下にあるボタン群 */
+    .bottom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+    
+    /* 汎用ボタン quadratics */
+    .btn-action {
+      border-radius: 8px; font-size: 1rem; font-weight: bold; padding: 12px 0; cursor: pointer; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none;
+    }
+    .btn-action:active { opacity: 0.85; }
+
+    .btn-undo { background: #ffffff; color: #d32f2f; border: 2px solid #d32f2f; }
+    .btn-undo:active { background: #fff0f0; }
+    
+    .btn-go-pay { background: #2e7d32; color: #fff; grid-column: span 2; font-size: 1.1rem; }
+    .btn-back-order { background: #ffffff; color: #1976d2; border: 2px solid #1976d2; }
+    .btn-complete { background: #d32f2f; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <h1>🍧 夏祭り チケット会計 🍧</h1>
+
+  <!-- 表示部（共通） -->
+  <div class="display">
+    <div class="row item-row">
+      <span class="item-label">注文:</span>
+      <span class="item-value" id="items-list">なし</span>
+    </div>
+    
+    <div class="price-row total-row">
+      <span class="label">合計:</span>
+      <span class="value" id="total-price">0</span>
+      <span class="unit">円</span>
+    </div>
+    
+    <div class="price-row deposit-row">
+      <span class="label">お預かり:</span>
+      <span class="value" id="deposit-price">0</span>
+      <span class="unit">円</span>
+    </div>
+    
+    <div class="price-row change-row">
+      <span class="label">お返し:</span>
+      <span class="value" id="change-price">0</span>
+      <span class="unit">円</span>
+    </div>
+  </div>
+
+  <!-- 1. 注文入力画面 -->
+  <div id="page-order" class="page active">
+    <div class="ticket-grid">
+      <button class="btn-item" onclick="addItem('やきとり2本', 100)">やきとり2本<span>100円</span></button>
+      <button class="btn-item" onclick="addItem('やきとり4本', 200)">やきとり4本<span>200円</span></button>
+      <button class="btn-item" onclick="addItem('焼きそば', 200)">焼きそば<span>200円</span></button>
+      <button class="btn-item" onclick="addItem('唐揚げ', 150)">唐揚げ<span>150円</span></button>
+      <button class="btn-item" onclick="addItem('ポテト', 100)">ポテト<span>100円</span></button>
+      <button class="btn-item" onclick="addItem('ビール・ノンアル', 100)">ビール・ノンアル<span>100円</span></button>
+      
+      <!-- 共通券エリア -->
+      <button class="btn-item special" onclick="addItem('共通50円×1', 50)">共通50円×1<span>50円</span></button>
+      <button class="btn-item special" onclick="addItem('共通50円×5', 250)">共通50円×5<span>250円</span></button>
+      <button class="btn-item special full-width" onclick="addItem('共通50円×10', 500)">共通50円×10<span>500円</span></button>
+    </div>
+
+    <!-- 注文入力画面の下部操作ボタン -->
+    <div class="bottom-actions" style="margin-top: 10px;">
+      <button class="btn-action btn-undo" onclick="undoLastItem()">↩ 1つ取消</button>
+      <button class="btn-action btn-undo" style="border-color:#666; color:#666" onclick="resetAll()">クリア</button>
+      <button class="btn-action btn-go-pay" onclick="goToPay()">お会計へ ➔</button>
+    </div>
+  </div>
+
+  <!-- 2. お会計画面（預り金入力） -->
+  <div id="page-pay" class="page">
+    <div class="keypad-section">
+      <div class="keypad-grid">
+        <button class="btn-key" onclick="pressNum('7')">7</button>
+        <button class="btn-key" onclick="pressNum('8')">8</button>
+        <button class="btn-key" onclick="pressNum('9')">9</button>
+        <button class="btn-key" onclick="pressNum('4')">4</button>
+        <button class="btn-key" onclick="pressNum('5')">5</button>
+        <button class="btn-key" onclick="pressNum('6')">6</button>
+        <button class="btn-key" onclick="pressNum('1')">1</button>
+        <button class="btn-key" onclick="pressNum('2')">2</button>
+        <button class="btn-key" onclick="pressNum('3')">3</button>
+        <button class="btn-key" onclick="pressNum('0')">0</button>
+        <button class="btn-key" onclick="pressNum('00')">00</button>
+        <button class="btn-key action" onclick="pressBackspace()">⌫</button>
+      </div>
+    </div>
+
+    <!-- お会計画面の下部操作ボタン -->
+    <div class="bottom-actions" style="margin-top: 10px;">
+      <button class="btn-action btn-back-order" onclick="goToOrder()">↩ 注文に戻る</button>
+      <button class="btn-action btn-complete" onclick="nextOrder()">会計完了（次の注文）</button>
+    </div>
+  </div>
+
+  <script>
+    let total = 0;
+    let depositStr = "";
+    let items = {};
+    let history = [];
+
+    // 画面遷移ロジック
+    function goToPay() {
+      if (total === 0) {
+        alert("注文が選択されていません");
+        return;
+      }
+      document.getElementById('page-order').classList.remove('active');
+      document.getElementById('page-pay').classList.add('active');
+    }
+
+    function goToOrder() {
+      document.getElementById('page-pay').classList.remove('active');
+      document.getElementById('page-order').classList.add('active');
+    }
+
+    function nextOrder() {
+      // 一括リセットして注文画面に戻る
+      resetAll();
+      goToOrder();
+    }
+
+    function addItem(name, price) {
+      total += price;
+      items[name] = (items[name] || 0) + 1;
+      history.push({ name: name, price: price });
+      updateDisplay();
+    }
+
+    function undoLastItem() {
+      if (history.length === 0) return;
+      
+      let lastItem = history.pop();
+      total -= lastItem.price;
+      
+      if (items[lastItem.name] > 1) {
+        items[lastItem.name] -= 1;
+      } else {
+        delete items[lastItem.name];
+      }
+      
+      updateDisplay();
+    }
+
+    function pressNum(num) {
+      if (depositStr === "" && (num === "0" || num === "00")) return;
+      depositStr += num;
+      updateDisplay();
+    }
+
+    function pressBackspace() {
+      depositStr = depositStr.slice(0, -1);
+      updateDisplay();
+    }
+
+    function resetAll() {
+      total = 0;
+      depositStr = "";
+      items = {};
+      history = [];
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('total-price').innerText = total.toLocaleString();
+      
+      let depositVal = depositStr === "" ? 0 : parseInt(depositStr, 10);
+      document.getElementById('deposit-price').innerText = depositVal.toLocaleString();
+      
+      let change = depositVal - total;
+      document.getElementById('change-price').innerText = (depositVal >= total && total > 0) ? change.toLocaleString() : 0;
+
+      let itemListStr = Object.entries(items).map(([k, v]) => `${k}×${v}`).join(', ');
+      document.getElementById('items-list').innerText = itemListStr || 'なし';
+    }
+  </script>
+</body>
+</html>
