@@ -8,6 +8,7 @@
    
   <title>夏祭り チケット会計</title> 
   <style> 
+    /* ベーススタイル・画面全体の固定 */
     * {  
       box-sizing: border-box;  
       margin: 0;  
@@ -30,6 +31,7 @@
       gap: 6px;  
     } 
  
+    /* ヘッダーエリア */
     .header {
       position: relative; 
       display: flex;
@@ -38,6 +40,7 @@
       flex-shrink: 0;
       padding: 2px 0;
     }
+
     h1 { 
       font-size: 0.9rem; 
       color: #333; 
@@ -58,12 +61,13 @@
       line-height: 1;
       opacity: 0.7;
     }
+
     .btn-settings:active {
       opacity: 1;
-      /* ギアボタンもタップ時に揺れないように変形を解除 */
       transform: translateY(-50%);
     }
      
+    /* 金額表示エリア */
     .display {  
       background: #fff;  
       padding: 10px 12px;  
@@ -93,12 +97,12 @@
     .deposit-row { color: #1976d2; border-top: 1px dashed #eee; margin-top: 2px; padding-top: 2px; } 
     .change-row { color: #2e7d32; font-size: 1.25rem; } 
  
-    /* チケットエリア：スクロール禁止＆サイズ自動フィッティング */
+    /* 商品ボタン配置エリア */
     .tickets-section { 
       flex: 1.5; 
       display: flex; 
       min-height: 0; 
-      overflow: hidden; /* スクロール禁止 */
+      overflow: hidden; 
       padding: 4px; 
     } 
     
@@ -107,11 +111,12 @@
       grid-template-columns: 1fr 1fr; 
       gap: 6px; 
       width: 100%; 
-      height: 100%; /* 親要素一杯に広げる */
+      height: 100%; 
       align-content: stretch; 
-      grid-auto-rows: 1fr; /* ボタン数に応じて高さを自動伸長・縮小 */
+      grid-auto-rows: 1fr; /* ボタン数に応じて高さを自動均等分配 */
     } 
      
+    /* 商品ボタンの個別スタイル */
     .btn-item {  
       position: relative; 
       background: #1976d2;  
@@ -126,16 +131,16 @@
       align-items: center;  
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
       cursor: pointer;  
-      min-height: 0; /* min-height制限解除 */
+      min-height: 0; 
       height: 100%; 
       overflow: visible; 
     } 
 
-    /* タップ時の移動（scale/transform）を無効化し、色変更のみでタップ感を表現 */
     .btn-item:active { 
       background-color: #115293; 
       transform: none; 
     } 
+
     .btn-item.special:active { 
       background-color: #00565f; 
       transform: none; 
@@ -152,7 +157,7 @@
     .btn-item.full-width { grid-column: span 2; } 
     .btn-item span.price-tag { font-size: 0.75rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 1px 4px; border-radius: 3px; white-space: nowrap; } 
  
-    /* バッジ位置・表示の調整 */
+    /* 注文数のバッジ表示（右上の赤丸） */
     .badge { 
       display: none; 
       position: absolute; 
@@ -174,8 +179,10 @@
       pointer-events: none; 
     } 
  
+    /* テンキーエリア */
     .keypad-section { flex: 0.7; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; height: 100%; } 
+    
     .btn-key {  
       background: #f8f9fa;  
       color: #333;  
@@ -189,10 +196,13 @@
       cursor: pointer;  
       height: 100%; 
     } 
+
     .btn-key:active { background: #e0e0e0; } 
     .btn-key.action { background: #eceff1; font-size: 0.95rem; } 
  
+    /* 画面下部の操作ボタン（取消・クリア） */
     .bottom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0; } 
+    
     .btn-undo-bottom {  
       background: #ffffff;  
       color: #d32f2f;  
@@ -205,6 +215,7 @@
       text-align: center;  
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
     } 
+
     .btn-undo-bottom:active { background: #fff0f0; } 
      
     .btn-clear {  
@@ -219,8 +230,10 @@
       text-align: center;  
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
     } 
+
     .btn-clear:active { opacity: 0.9; } 
 
+    /* 商品設定モーダルダイアログ */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -231,6 +244,7 @@
       align-items: center;
       padding: 12px;
     }
+
     .modal-content {
       background: #fff;
       border-radius: 8px;
@@ -241,6 +255,7 @@
       flex-direction: column;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+
     .modal-header {
       padding: 12px;
       border-bottom: 1px solid #eee;
@@ -249,11 +264,13 @@
       align-items: center;
       font-weight: bold;
     }
+
     .modal-body {
       padding: 12px;
       overflow-y: auto;
       flex: 1;
     }
+
     .modal-footer {
       padding: 10px 12px;
       border-top: 1px solid #eee;
@@ -261,6 +278,7 @@
       justify-content: space-between;
       gap: 8px;
     }
+
     .setting-item-row {
       display: grid;
       grid-template-columns: 1fr 80px 45px 35px;
@@ -268,6 +286,7 @@
       margin-bottom: 8px;
       align-items: center;
     }
+
     .setting-input {
       padding: 6px;
       border: 1px solid #ccc;
@@ -275,12 +294,14 @@
       font-size: 0.85rem;
       user-select: text;
     }
+
     .setting-select {
       padding: 6px 2px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 0.75rem;
     }
+
     .btn-del {
       background: #ff5252;
       color: white;
@@ -290,6 +311,7 @@
       font-size: 0.8rem;
       cursor: pointer;
     }
+
     .btn-add {
       width: 100%;
       padding: 8px;
@@ -301,6 +323,7 @@
       cursor: pointer;
       margin-top: 6px;
     }
+
     .btn-save {
       background: #1976d2;
       color: #fff;
@@ -310,6 +333,7 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .btn-cancel {
       background: #ccc;
       color: #333;
@@ -319,6 +343,7 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     .btn-reset {
       background: #fff;
       color: #d32f2f;
@@ -332,11 +357,13 @@
 </head> 
 <body> 
  
+  <!-- ヘッダー -->
   <div class="header">
     <h1>🍧 夏祭り チケット会計 🍧</h1> 
     <button class="btn-settings" onclick="openSettings()" title="商品設定">⚙️</button>
   </div>
  
+  <!-- 表示部（お会計・お預り・おつり） -->
   <div class="display"> 
     <div class="price-row total-row"> 
       <span class="label">お会計:</span> 
@@ -357,11 +384,14 @@
     </div> 
   </div> 
  
+  <!-- 商品チケットエリア -->
   <div class="tickets-section"> 
     <div class="ticket-grid" id="ticket-grid">
+      <!-- JavaScriptで動的に生成 -->
     </div> 
   </div> 
  
+  <!-- お預り金入力用テンキー -->
   <div class="keypad-section"> 
     <div class="keypad-grid"> 
       <button class="btn-key" onclick="pressNum('7')">7</button> 
@@ -379,11 +409,13 @@
     </div> 
   </div> 
  
+  <!-- 操作ボタン -->
   <div class="bottom-actions"> 
     <button class="btn-undo-bottom" onclick="undoLastItem()">↩ 1つ取消</button> 
     <button class="btn-clear" onclick="resetAll()">クリア</button> 
   </div> 
 
+  <!-- 設定モーダル（初期非表示） -->
   <div class="modal-overlay" id="settings-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -392,6 +424,7 @@
       </div>
       <div class="modal-body">
         <div id="settings-list">
+          <!-- JavaScriptで動的に生成 -->
         </div>
         <button class="btn-add" onclick="addSettingRow()">＋ 新しい商品を追加</button>
       </div>
@@ -406,6 +439,7 @@
   </div>
  
   <script> 
+    // マスタデータの初期値
     const defaultProducts = [
       { id: 'item1', name: 'やきとり 2本', price: 100, style: 'normal' },
       { id: 'item2', name: 'やきとり 4本', price: 200, style: 'normal' },
@@ -418,12 +452,14 @@
       { id: 'item9', name: '共通50円 ×10枚つづり', price: 500, style: 'full' }
     ];
 
-    let products = [];
-    let total = 0; 
-    let depositStr = ""; 
-    let items = {}; 
-    let history = []; 
+    // アプリケーションの状態管理用変数
+    let products = [];      // 有効な商品一覧
+    let total = 0;          // 合計金額
+    let depositStr = "";    // 入力中の預り金文字列
+    let items = {};         // 商品ごとの購入数（例: { item1: 2 }）
+    let history = [];       // 操作履歴（1つ取消用）
 
+    // アプリケーションの初期化
     function init() {
       const savedProducts = localStorage.getItem('matsuri_products');
       if (savedProducts) {
@@ -439,6 +475,7 @@
       resetAll();
     }
 
+    // 商品ボタンの一覧描画
     function renderTicketButtons() {
       const grid = document.getElementById('ticket-grid');
       grid.innerHTML = '';
@@ -461,12 +498,14 @@
       });
     }
 
+    // エスケープ処理（XSS対策）
     function escapeHtml(str) {
       return str.replace(/[&<>"']/g, function(m) {
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
       });
     }
  
+    // 商品追加処理
     function addItem(id, price) { 
       total += price; 
       items[id] = (items[id] || 0) + 1; 
@@ -474,6 +513,7 @@
       updateDisplay(); 
     } 
  
+    // 直前の購入履歴を削除（1つ取消）
     function undoLastItem() { 
       if (history.length === 0) return; 
        
@@ -489,17 +529,20 @@
       updateDisplay(); 
     } 
  
+    // テンキーによるお預り金入力
     function pressNum(num) { 
       if (depositStr === "" && (num === "0" || num === "00")) return; 
       depositStr += num; 
       updateDisplay(); 
     } 
  
+    // お預り金の1文字消去（バックスペース）
     function pressBackspace() { 
       depositStr = depositStr.slice(0, -1); 
       updateDisplay(); 
     } 
  
+    // 会計データの全リセット
     function resetAll() { 
       total = 0; 
       depositStr = ""; 
@@ -508,6 +551,7 @@
       updateDisplay(); 
     } 
  
+    // 画面表示更新（合計・預り金・おつり・購入数バッジ）
     function updateDisplay() { 
       document.getElementById('total-price').innerText = total.toLocaleString(); 
        
@@ -517,6 +561,7 @@
       let change = depositVal - total; 
       document.getElementById('change-price').innerText = (depositVal >= total && total > 0) ? change.toLocaleString() : 0; 
 
+      // 商品ボタン上の購入数バッジ表示切り替え
       products.forEach(prod => {
         let count = items[prod.id] || 0; 
         let badgeEl = document.getElementById('badge-' + prod.id); 
@@ -533,18 +578,22 @@
       });
     } 
 
+    // モーダル設定用の一時保持データ
     let tempProducts = [];
 
+    // 設定モーダルの表示
     function openSettings() {
       tempProducts = JSON.parse(JSON.stringify(products));
       renderSettingsList();
       document.getElementById('settings-modal').style.display = 'flex';
     }
 
+    // 設定モーダルを閉じる
     function closeSettings() {
       document.getElementById('settings-modal').style.display = 'none';
     }
 
+    // 設定モーダル内の編集リスト描画
     function renderSettingsList() {
       const container = document.getElementById('settings-list');
       container.innerHTML = '';
@@ -566,21 +615,25 @@
       });
     }
 
+    // 設定一時データの更新
     function updateTempItem(index, key, value) {
       tempProducts[index][key] = value;
     }
 
+    // 設定モーダルに新規商品行を追加
     function addSettingRow() {
       const newId = 'item_' + Date.now();
       tempProducts.push({ id: newId, name: '', price: 100, style: 'normal' });
       renderSettingsList();
     }
 
+    // 設定モーダルから指定行を削除
     function removeSettingRow(index) {
       tempProducts.splice(index, 1);
       renderSettingsList();
     }
 
+    // 設定の初期化（デフォルトデータに戻す）
     function resetToDefaultItems() {
       if (confirm('商品設定を初期状態に戻しますか？')) {
         tempProducts = JSON.parse(JSON.stringify(defaultProducts));
@@ -588,6 +641,7 @@
       }
     }
 
+    // 編集した設定の保存と画面更新
     function saveSettings() {
       const hasEmpty = tempProducts.some(p => !p.name.trim());
       if (hasEmpty) {
@@ -602,6 +656,7 @@
       closeSettings();
     }
 
+    // 画面ロード時に初期化を実行
     init();
   </script> 
 </body> 
