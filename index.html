@@ -294,7 +294,7 @@
       document.getElementById('reset-default').addEventListener('click', resetToDefaultItems);
       document.getElementById('save-settings').addEventListener('click', saveSettings);
       document.getElementById('undo-last').addEventListener('click', undoLastItem);
-      document.getElementById('clear-all').addEventListener('click', () => { if (confirm('会計データをクリアしますか？')) resetAll() });
+      document.getElementById('clear-all').addEventListener('click', () => { resetAll() });
 
       window.addEventListener('keydown', (e) => {
         if (e.key >= '0' && e.key <= '9') { if (els.settingsModal.style.display === 'flex') return; pressNum(e.key) }
