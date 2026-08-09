@@ -14,12 +14,13 @@
 
     /* ヘッダー：左に設定、中央にタイトル、右にクリア */
     .header{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding:2px 0}
-    .header .left,.header .center,.header .right{display:flex;align-items:center}
-    .header .center{flex:1;justify-content:center}
-    h1{font-size:1.0rem;color:#333;text-align:center}
+    .header .left,.header .right{display:flex;align-items:center;flex:1;min-width:0}
+    .header .left{justify-content:flex-start}
+    .header .right{justify-content:flex-end}
+    .header .center{flex:2;display:flex;justify-content:center;align-items:center;text-align:center;min-width:0}
+    h1{font-size:0.9rem;color:#333;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .btn-settings{background:transparent;border:0;font-size:1.2rem;padding:0 8px;cursor:pointer;line-height:1;opacity:.9}
     .btn-settings:active{opacity:1}
-
     /* 会計表示エリア */
     .display{background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);flex-shrink:0}
     .price-row{display:grid;grid-template-columns:85px 1fr auto;align-items:center;font-size:1.25rem;font-weight:bold;padding:2px 0}
@@ -327,7 +328,7 @@
       { id: 'item1', name: 'やきとり 2本', price: 100, style: 'normal' },
       { id: 'item2', name: 'やきとり 4本', price: 200, style: 'normal' },
       { id: 'item3', name: '焼きそば', price: 200, style: 'normal' },
-      { id: 'item4', name: '唐揚げ', price: 150, style: 'normal' },
+      { id: 'item4', name: 'から揚げ', price: 150, style: 'normal' },
       { id: 'item5', name: 'ポテト', price: 100, style: 'normal' },
       { id: 'item6', name: 'ビール・ノンアル', price: 100, style: 'normal' },
       { id: 'item7', name: '共通50円 ×1枚', price: 50, style: 'special' },
