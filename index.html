@@ -28,14 +28,14 @@
     .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:4px}
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;height:100%;align-content:stretch;grid-auto-rows:1fr}
 
-    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;height:100%}
+    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center}
     .btn-item:active{background-color:#115293}
     .btn-item.special{background:#00838f}.btn-item.special:active{background-color:#00565f}
     .btn-item.full-width{grid-column:span 2}
     .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
     .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 4px;border-radius:3px;white-space:nowrap}
 
-    .badge{display:none;position:absolute;top:-6px;right:-6px;background:#ff1744;color:#fff;font-size:0.75rem;font-weight:700;min-width:22px;height:22px;border-radius:11px;padding:0 4px;display:flex;justify-content:center;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,.3);border:2px solid #fff;z-index:10;pointer-events:none}
+    .badge{display:none;position:absolute;top:-6px;right:-6px;background:#ff1744;color:#fff;font-size:0.75rem;font-weight:700;min-width:22px;height:22px;border-radius:11px;padding:0 4px;display:flex;justify-content:center;align-items:center}
 
     .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;min-height:0}
     .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;height:100%}
@@ -44,11 +44,14 @@
 
     /* 幅広の取り消しボタン（メニュー下部） */
     .menu-undo{margin-top:8px}
-    .btn-undo-wide{width:100%;background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:1rem;font-weight:bold;padding:12px 0;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .btn-undo-wide{width:100%;background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:1rem;font-weight:bold;padding:12px 0;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06)}
     .btn-undo-wide:active{background:#fff0f0}
 
     .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .btn-clear:active{opacity:.9}
+
+    /* ヘッダー用に小さめの赤いクリアボタン */
+    .btn-clear-header-small{padding:4px 8px;font-size:0.85rem;min-width:56px;border-radius:6px;background:#d32f2f;color:#fff;border:0}
 
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;justify-content:center;align-items:center;padding:12px}
     .modal-content{background:#fff;border-radius:8px;width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(0,0,0,.2)}
@@ -76,7 +79,7 @@
       <h1>🍧 夏祭り チケット会計 🍧</h1>
     </div>
     <div class="right">
-      <button id="clear-all" class="btn-clear-header" title="クリア" aria-label="クリア">クリア</button>
+      <button id="clear-all" class="btn-clear btn-clear-header-small" title="クリア" aria-label="クリア">クリア</button>
     </div>
   </div>
 
@@ -251,7 +254,7 @@
     // core actions
     function addItem(id, price) { state.total += Number(price) || 0; state.items[id] = (state.items[id] || 0) + 1; state.history.push({ id, price: Number(price) || 0 }); updateDisplay() }
     function undoLastItem() { const last = state.history.pop(); if (!last) return; state.total -= last.price; if (state.items[last.id] > 1) state.items[last.id] -= 1; else delete state.items[last.id]; updateDisplay() }
-    function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0,9); updateDisplay() }
+    function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
     function pressBackspace() { if (!state.depositStr) return; state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
     function resetAll() { state.total = 0; state.depositStr = ''; state.items = {}; state.history = []; updateDisplay() }
 
@@ -270,17 +273,7 @@
         }
       });
 
-      // クリアボタンは合計がゼロのときは控えめに
-      const clearHeaderBtn = document.getElementById('clear-all');
-      if (clearHeaderBtn) {
-        if (state.total === 0 && Object.keys(state.items).length === 0) {
-          clearHeaderBtn.style.opacity = '0.45';
-          clearHeaderBtn.disabled = true;
-        } else {
-          clearHeaderBtn.style.opacity = '0.95';
-          clearHeaderBtn.disabled = false;
-        }
-      }
+      // クリアボタンの活性制御を削除（常に有効）
     }
 
     // settings modal
@@ -294,10 +287,10 @@
         const row = document.createElement('div');
         row.className = 'setting-item-row';
 
-        const nameInput = document.createElement('input'); nameInput.type = 'text'; nameInput.className = 'setting-input'; nameInput.value = prod.name; nameInput.placeholder = '商品名'; nameInput.addEventListener('input', e => { state.tempProducts[idx].name = e.target.value });
-        const priceInput = document.createElement('input'); priceInput.type = 'number'; priceInput.className = 'setting-input'; priceInput.value = prod.price; priceInput.min = 0; priceInput.placeholder = '価格'; priceInput.addEventListener('input', e => { const v = safeParseInt(e.target.value); state.tempProducts[idx].price = v; e.target.value = v });
-        const select = document.createElement('select'); select.className = 'setting-select'; ['normal','special','full'].forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt === 'normal' ? '通常' : (opt === 'special' ? '色付' : '幅広'); if (prod.style === opt) o.selected = true; select.appendChild(o) }); select.addEventListener('change', e => { state.tempProducts[idx].style = e.target.value });
-        const delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.type = 'button'; delBtn.textContent = '✕'; delBtn.addEventListener('click', () => { state.tempProducts.splice(idx,1); renderSettingsList() });
+        const nameInput = document.createElement('input'); nameInput.type = 'text'; nameInput.className = 'setting-input'; nameInput.value = prod.name; nameInput.placeholder = '商品名'; nameInput.addEventListener('input', (e) => { prod.name = e.target.value })
+        const priceInput = document.createElement('input'); priceInput.type = 'number'; priceInput.className = 'setting-input'; priceInput.value = prod.price; priceInput.min = 0; priceInput.placeholder = '価格'; priceInput.addEventListener('input', (e) => { prod.price = safeParseInt(e.target.value) })
+        const select = document.createElement('select'); select.className = 'setting-select'; ['normal','special','full'].forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (prod.style === opt) o.selected = true; select.appendChild(o) }); select.addEventListener('change', (e) => { prod.style = e.target.value })
+        const delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.type = 'button'; delBtn.textContent = '✕'; delBtn.addEventListener('click', () => { state.tempProducts.splice(idx,1); renderSettingsList() })
 
         row.appendChild(nameInput); row.appendChild(priceInput); row.appendChild(select); row.appendChild(delBtn); frag.appendChild(row);
       });
@@ -306,7 +299,7 @@
 
     function addSettingRow() { state.tempProducts.push({ id: generateId(), name: '', price: 100, style: 'normal' }); renderSettingsList() }
     function resetToDefaultItems() { if (!confirm('商品設定を初期状態に戻しますか？')) return; state.tempProducts = defaultProducts.map(p=>({ ...p })); renderSettingsList() }
-    function saveSettings() { const hasEmpty = state.tempProducts.some(p => !(p.name && p.name.trim())); if (hasEmpty) { alert('商品名が空の項目があります。入力するか削除してください。'); return } state.products = state.tempProducts.map(p=>({ ...p })); saveProductsToStorage(state.products); renderTicketButtons(); resetAll(); closeSettings() }
+    function saveSettings() { const hasEmpty = state.tempProducts.some(p => !(p.name && p.name.trim())); if (hasEmpty) { alert('商品名が空の項目があります。入力するか削除してください'); return } state.products = state.tempProducts.map(p=>({ ...p })); saveProductsToStorage(state.products); closeSettings(); renderTicketButtons(); updateDisplay() }
 
     // wire up controls
     function bindControls() {
