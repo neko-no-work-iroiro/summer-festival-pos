@@ -56,9 +56,10 @@
 
     /* もどすボタン（緑） */
     .btn-undo-action{
-      background: #00565f;
+      background: #00838f;
       color: #fff;
     }
+    .btn-undo-action:active{ background-color: #00565f; }
    
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr;padding:0 4px}
 
@@ -85,7 +86,7 @@
     .modal-header{padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;font-weight:bold}
     .modal-body{padding:12px;overflow-y:auto;flex:1}.modal-footer{padding:10px 12px;border-top:1px solid #eee;display:flex;justify-content:space-between;gap:8px}
 
-    .setting-item-row{display:grid;grid-template-columns:1fr 80px 45px 35px;gap:6px;margin-bottom:8px;align-items:center}
+    .setting-item-row{display:grid;grid-template-columns:1fr 80px 65px 35px;gap:6px;margin-bottom:8px;align-items:center}
     .setting-input{padding:6px;border:1px solid #ccc;border-radius:4px;font-size:.85rem;user-select:text}
     .setting-select{padding:6px 2px;border:1px solid #ccc;border-radius:4px;font-size:.75rem}
     .btn-del{background:#ff5252;color:#fff;border:0;border-radius:4px;padding:6px;font-size:.8rem;cursor:pointer}
@@ -308,13 +309,32 @@
     function renderSettingsList() {
       els.settingsList.innerHTML = '';
       const frag = document.createDocumentFragment();
+
+      // 種別の選択肢（表示名と内部値のマッピング）
+      const styleOptions = [
+        { value: 'normal', label: '標準' },
+        { value: 'special', label: '特別' },
+        { value: 'full', label: '幅広' }
+      ];
+
       state.tempProducts.forEach((prod, idx) => {
         const row = document.createElement('div');
         row.className = 'setting-item-row';
 
         const nameInput = document.createElement('input'); nameInput.type = 'text'; nameInput.className = 'setting-input'; nameInput.value = prod.name; nameInput.placeholder = '商品名'; nameInput.addEventListener('change', (e) => { state.tempProducts[idx].name = e.target.value });
         const priceInput = document.createElement('input'); priceInput.type = 'number'; priceInput.className = 'setting-input'; priceInput.value = prod.price; priceInput.min = 0; priceInput.placeholder = '価格'; priceInput.addEventListener('change', (e) => { state.tempProducts[idx].price = safeParseInt(e.target.value) });
-        const select = document.createElement('select'); select.className = 'setting-select'; ['normal','special','full'].forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; select.appendChild(o) }); select.value = prod.style; select.addEventListener('change', (e) => { state.tempProducts[idx].style = e.target.value });
+        
+        const select = document.createElement('select'); 
+        select.className = 'setting-select'; 
+        styleOptions.forEach(opt => { 
+          const o = document.createElement('option'); 
+          o.value = opt.value; 
+          o.textContent = opt.label; 
+          select.appendChild(o) 
+        }); 
+        select.value = prod.style; 
+        select.addEventListener('change', (e) => { state.tempProducts[idx].style = e.target.value });
+        
         const delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.type = 'button'; delBtn.textContent = '✕'; delBtn.addEventListener('click', () => { state.tempProducts.splice(idx, 1); renderSettingsList() });
 
         row.appendChild(nameInput); row.appendChild(priceInput); row.appendChild(select); row.appendChild(delBtn); frag.appendChild(row);
