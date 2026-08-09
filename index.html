@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>夏祭り チケット会計</title>
   <style>
-    /* 最小限に整理したスタイル（見た目・挙動は維持） */
+    /* ベーススタイル */
     *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;user-select:none;touch-action:manipulation}
     html,body{height:100dvh;overflow:hidden}
     body{padding:8px;background:#f4f6f8;display:flex;flex-direction:column;gap:6px}
@@ -17,21 +17,53 @@
     .header .left,.header .center,.header .right{display:flex;align-items:center}
     .header .center{flex:1;justify-content:center}
     h1{font-size:0.9rem;color:#333;text-align:center}
-    .btn-settings,.btn-clear-header{background:transparent;border:0;font-size:1.2rem;padding:0 8px;cursor:pointer;line-height:1;opacity:.9}
-    .btn-settings:active,.btn-clear-header:active{opacity:1}
+    .btn-settings{background:transparent;border:0;font-size:1.2rem;padding:0 8px;cursor:pointer;line-height:1;opacity:.9}
+    .btn-settings:active{opacity:1}
 
+    /* 会計表示エリア */
     .display{background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);flex-shrink:0}
     .price-row{display:grid;grid-template-columns:85px 1fr auto;align-items:center;font-size:1.25rem;font-weight:bold;padding:2px 0}
     .price-row .label{text-align:left}.price-row .value{text-align:right;padding-right:6px;font-variant-numeric:tabular-nums}.price-row .unit{text-align:right}
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
+    /* チケットエリア */
     .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-    .tickets-header-row{display:flex;justify-content:space-between;align-items:center;padding:4px 8px 2px 4px;margin-bottom:2px;gap:8px}
+    .tickets-header-row{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 2px 4px;margin-bottom:2px;gap:8px}
     .tickets-header{font-size:0.75rem;color:#999;font-weight:500}
-    .btn-undo-header{padding:4px 8px;font-size:0.85rem;min-width:56px;border-radius:6px;background:#fff;color:#d32f2f;border:2px solid #d32f2f;font-weight:bold;cursor:pointer}
-    .btn-undo-header:active{opacity:.8}
+
+    /* 共通アクションボタン（クリア・もどす）のサイズ・並びを統一 */
+    .btn-action-small{
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      min-width: 60px;
+      height: 28px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      border: none;
+    }
+
+    /* クリアボタン（赤） */
+    .btn-clear-action{
+      background: #d32f2f;
+      color: #fff;
+    }
+    .btn-clear-action:active{ opacity: .8; }
+
+    /* もどすボタン（共通50円チケットと同じテーマ色 #00838f） */
+    .btn-undo-action{
+      background: #00838f;
+      color: #fff;
+    }
+    .btn-undo-action:active{ background-color: #00565f; }
+
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr;padding:0 4px}
 
+    /* 商品チケットボタン */
     .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
     .btn-item:active{background-color:#115293}
     .btn-item.special{background:#00838f}.btn-item.special:active{background-color:#00565f}
@@ -41,18 +73,14 @@
 
     .badge{display:none;position:absolute;top:2px;right:2px;background:#ff1744;color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 2px;display:flex;justify-content:center;align-items:center;line-height:1;z-index:2}
 
+    /* テンキーエリア */
     .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
     .keypad-header{font-size:0.75rem;color:#999;font-weight:500;padding:2px 8px 4px}
     .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;flex:1;min-height:0}
     .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
     .btn-key:active{background:#e0e0e0}.btn-key.action{background:#eceff1;font-size:.95rem}
 
-    .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-    .btn-clear:active{opacity:.9}
-
-    /* ヘッダー用に小さめの赤いクリアボタン */
-    .btn-clear-header-small{padding:4px 8px;font-size:0.85rem;min-width:56px;border-radius:6px;background:#d32f2f;color:#fff;border:0}
-
+    /* 設定モーダル */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;justify-content:center;align-items:center;padding:12px}
     .modal-content{background:#fff;border-radius:8px;width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(0,0,0,.2)}
     .modal-header{padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;font-weight:bold}
@@ -79,7 +107,7 @@
       <h1>🍧 夏祭り チケット会計 🍧</h1>
     </div>
     <div class="right">
-      <button id="clear-all" class="btn-clear btn-clear-header-small" title="クリア" aria-label="クリア">クリア</button>
+      <button id="clear-all" class="btn-action-small btn-clear-action" title="クリア" aria-label="クリア">クリア</button>
     </div>
   </div>
 
@@ -108,7 +136,7 @@
   <div class="tickets-section">
     <div class="tickets-header-row">
       <div class="tickets-header">チケット</div>
-      <button id="undo-last" class="btn-undo-header" title="1つ取消" aria-label="1つ取消">もどす</button>
+      <button id="undo-last" class="btn-action-small btn-undo-action" title="1つ取消" aria-label="1つ取消">もどす</button>
     </div>
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
@@ -272,8 +300,6 @@
           if (count > 0) { badgeEl.textContent = count; badgeEl.style.display = 'flex' } else { badgeEl.textContent = ''; badgeEl.style.display = 'none' }
         }
       });
-
-      // クリアボタンの活性制御を削除（常に有効）
     }
 
     // settings modal
@@ -310,8 +336,6 @@
       document.getElementById('reset-default').addEventListener('click', resetToDefaultItems);
       document.getElementById('save-settings').addEventListener('click', saveSettings);
       document.getElementById('undo-last').addEventListener('click', undoLastItem);
-
-      // クリアはヘッダーのボタン（短押しで即時クリア）
       document.getElementById('clear-all').addEventListener('click', () => { resetAll() });
 
       window.addEventListener('keydown', (e) => {
