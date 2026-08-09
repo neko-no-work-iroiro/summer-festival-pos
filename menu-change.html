@@ -34,23 +34,37 @@
  
     /* ヘッダーエリア */
     .header {
+      position: relative; /* ボタンの右端配置の基準 */
       display: flex;
-      justify-content: space-between;
+      justify-content: center; /* アプリ名を中央に配置 */
       align-items: center;
       flex-shrink: 0;
-      /* ヘッダーの余白を少し詰めて高さを抑える */
-      padding: 2px 0; 
+      padding: 2px 0;
     }
-    h1 { font-size: 0.9rem; color: #333; margin: 0; } 
+    h1 { 
+      font-size: 0.9rem; 
+      color: #333; 
+      margin: 0; 
+      text-align: center; 
+    } 
+    
+    /* シンプル化した設定ボタン（右端に絶対配置） */
     .btn-settings {
-      background: #607d8b;
-      color: #fff;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
       border: none;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      padding: 3px 6px; /* ボタン内の余白を少し詰める */
-      font-weight: bold;
+      font-size: 1.2rem;
+      padding: 0 4px;
       cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+    }
+    .btn-settings:active {
+      opacity: 1;
+      transform: translateY(-50%) scale(0.95);
     }
      
     /* 会計表示エリア */ 
@@ -85,13 +99,7 @@
     .change-row { color: #2e7d32; font-size: 1.25rem; } 
  
     /* 上部：チケットエリア */ 
-    .tickets-section { 
-      /* ★修正ポイント1：チケットエリアの比率を少し増やす (1.3 -> 1.5) */
-      flex: 1.5; 
-      display: flex; 
-      min-height: 0; 
-      overflow-y: auto; 
-    } 
+    .tickets-section { flex: 1.5; display: flex; min-height: 0; overflow-y: auto; } 
     .ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; height: 100%; align-content: start; } 
      
     /* チケットボタン */ 
@@ -109,7 +117,6 @@
       align-items: center;  
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
       cursor: pointer;  
-      /* ★修正ポイント2：最低限の高さを画像0のサイズ感（約56px）に設定 */
       min-height: 56px; 
       height: 100%; 
     } 
@@ -148,7 +155,6 @@
     } 
  
     /* 下部：テンキーエリア */ 
-    /* ★修正ポイント3：テンキーエリアの比率を少し減らす (0.75 -> 0.7) */
     .keypad-section { flex: 0.7; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
     .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; height: 100%; } 
     .btn-key {  
@@ -311,7 +317,7 @@
  
   <div class="header">
     <h1>🍧 夏祭り チケット会計 🍧</h1> 
-    <button class="btn-settings" onclick="openSettings()">⚙️ 商品設定</button>
+    <button class="btn-settings" onclick="openSettings()" title="商品設定">⚙️</button>
   </div>
  
   <!-- 表示部 --> 
