@@ -12,23 +12,15 @@
     html,body{height:100dvh;overflow:hidden}
     body{padding:8px;background:#f4f6f8;display:flex;flex-direction:column;gap:6px}
 
-    /* ヘッダー：左に設定、中央にタイトル */
+    /* ヘッダー：左に設定、中央にタイトル、右にクリア */
     .header{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding:2px 0}
     .header .left,.header .center,.header .right{display:flex;align-items:center}
     .header .center{flex:1;justify-content:center}
     h1{font-size:0.9rem;color:#333;text-align:center}
-    .btn-settings{background:transparent;border:0;font-size:1.2rem;padding:0 8px;cursor:pointer;line-height:1;opacity:.9}
-    .btn-settings:active{opacity:1}
+    .btn-settings,.btn-clear-header{background:transparent;border:0;font-size:1.2rem;padding:0 8px;cursor:pointer;line-height:1;opacity:.9}
+    .btn-settings:active,.btn-clear-header:active{opacity:1}
 
-    /* top area: display + vertical actions */
-    .top-row{display:flex;gap:8px;align-items:flex-start}
-    .display{background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);flex-shrink:0;flex:1}
-    .action-column{display:flex;flex-direction:column;gap:8px;align-items:stretch}
-    .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.95rem;font-weight:bold;padding:8px 12px;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-    .btn-clear:active{opacity:.9}
-    .btn-undo-vertical{background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:.95rem;font-weight:bold;padding:8px 12px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-    .btn-undo-vertical:active{background:#fff0f0}
-
+    .display{background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);flex-shrink:0}
     .price-row{display:grid;grid-template-columns:85px 1fr auto;align-items:center;font-size:1.25rem;font-weight:bold;padding:2px 0}
     .price-row .label{text-align:left}.price-row .value{text-align:right;padding-right:6px;font-variant-numeric:tabular-nums}.price-row .unit{text-align:right}
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
@@ -36,16 +28,12 @@
     .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:4px}
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;height:100%;align-content:stretch;grid-auto-rows:1fr}
 
-    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;height:100%}
+    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;height:100%}
     .btn-item:active{background-color:#115293}
     .btn-item.special{background:#00838f}.btn-item.special:active{background-color:#00565f}
     .btn-item.full-width{grid-column:span 2}
-    .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
-    .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 6px;border-radius:3px;white-space:nowrap}
-
-    .right-controls{display:flex;align-items:center;gap:8px}
-    .decr-btn{background:rgba(255,255,255,0.18);border:none;color:#fff;padding:4px 8px;border-radius:4px;font-weight:700;cursor:pointer}
-    .decr-btn:active{background:rgba(255,255,255,0.28)}
+    .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
+    .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 4px;border-radius:3px;white-space:nowrap}
 
     .badge{display:none;position:absolute;top:-6px;right:-6px;background:#ff1744;color:#fff;font-size:0.75rem;font-weight:700;min-width:22px;height:22px;border-radius:11px;padding:0 4px;display:flex;justify-content:center;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,.3);border:2px solid #fff;z-index:10;pointer-events:none}
 
@@ -53,6 +41,14 @@
     .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;height:100%}
     .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
     .btn-key:active{background:#e0e0e0}.btn-key.action{background:#eceff1;font-size:.95rem}
+
+    /* 幅広の取り消しボタン（メニュー下部） */
+    .menu-undo{margin-top:8px}
+    .btn-undo-wide{width:100%;background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:1rem;font-weight:bold;padding:12px 0;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .btn-undo-wide:active{background:#fff0f0}
+
+    .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+    .btn-clear:active{opacity:.9}
 
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;justify-content:center;align-items:center;padding:12px}
     .modal-content{background:#fff;border-radius:8px;width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(0,0,0,.2)}
@@ -71,7 +67,7 @@
 </head>
 <body>
 
-  <!-- ヘッダー：左に設定、中央にタイトル -->
+  <!-- ヘッダー：左に設定、中央にタイトル、右にクリア -->
   <div class="header">
     <div class="left">
       <button id="open-settings" class="btn-settings" title="商品設定" aria-label="商品設定">⚙️</button>
@@ -80,35 +76,28 @@
       <h1>🍧 夏祭り チケット会計 🍧</h1>
     </div>
     <div class="right">
-      <!-- 保留: クリアは下に移動 -->
+      <button id="clear-all" class="btn-clear-header" title="クリア" aria-label="クリア">クリア</button>
     </div>
   </div>
 
-  <!-- 上部：お会計表示と縦並びアクション -->
-  <div class="top-row">
-    <div class="display">
-      <div class="price-row total-row">
-        <span class="label">お会計:</span>
-        <span class="value" id="total-price">0</span>
-        <span class="unit">円</span>
-      </div>
-
-      <div class="price-row deposit-row">
-        <span class="label">お預り:</span>
-        <span class="value" id="deposit-price">0</span>
-        <span class="unit">円</span>
-      </div>
-
-      <div class="price-row change-row">
-        <span class="label">おつり:</span>
-        <span class="value" id="change-price">0</span>
-        <span class="unit">円</span>
-      </div>
+  <!-- 表示部（お会計・お預り・おつり） -->
+  <div class="display">
+    <div class="price-row total-row">
+      <span class="label">お会計:</span>
+      <span class="value" id="total-price">0</span>
+      <span class="unit">円</span>
     </div>
 
-    <div class="action-column" aria-hidden="false">
-      <button id="clear-all" class="btn-clear" title="クリア" aria-label="クリア">クリア</button>
-      <button id="undo-last" class="btn-undo-vertical" title="1つ取消" aria-label="1つ取消">↩ 1つ取消</button>
+    <div class="price-row deposit-row">
+      <span class="label">お預り:</span>
+      <span class="value" id="deposit-price">0</span>
+      <span class="unit">円</span>
+    </div>
+
+    <div class="price-row change-row">
+      <span class="label">おつり:</span>
+      <span class="value" id="change-price">0</span>
+      <span class="unit">円</span>
     </div>
   </div>
 
@@ -116,6 +105,11 @@
   <div class="tickets-section">
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
+    </div>
+
+    <!-- メニューエリア下部の幅広取り消しボタン -->
+    <div class="menu-undo">
+      <button id="undo-last" class="btn-undo-wide">↩ 1つ取消</button>
     </div>
   </div>
 
@@ -214,33 +208,16 @@
         nameSpan.className = 'item-name';
         nameSpan.textContent = prod.name;
 
-        const rightControls = document.createElement('div');
-        rightControls.className = 'right-controls';
-
         const priceSpan = document.createElement('span');
         priceSpan.className = 'price-tag';
         priceSpan.textContent = `${prod.price}円`;
-
-        const decr = document.createElement('button');
-        decr.className = 'decr-btn';
-        decr.type = 'button';
-        decr.title = '1つ減らす';
-        decr.ariaLabel = '1つ減らす';
-        decr.textContent = '−';
-        decr.addEventListener('click', (e) => {
-          e.stopPropagation();
-          decrementItem(prod.id, prod.price);
-        });
 
         const badge = document.createElement('div');
         badge.className = 'badge';
         badge.id = 'badge-' + prod.id;
 
-        rightControls.appendChild(priceSpan);
-        rightControls.appendChild(decr);
-
         btn.appendChild(nameSpan);
-        btn.appendChild(rightControls);
+        btn.appendChild(priceSpan);
         btn.appendChild(badge);
 
         btn.addEventListener('click', () => addItem(prod.id, prod.price));
@@ -273,7 +250,6 @@
 
     // core actions
     function addItem(id, price) { state.total += Number(price) || 0; state.items[id] = (state.items[id] || 0) + 1; state.history.push({ id, price: Number(price) || 0 }); updateDisplay() }
-    function decrementItem(id, price) { if (!state.items[id]) return; state.items[id] -= 1; state.total -= Number(price) || 0; if (state.items[id] <= 0) delete state.items[id]; updateDisplay() }
     function undoLastItem() { const last = state.history.pop(); if (!last) return; state.total -= last.price; if (state.items[last.id] > 1) state.items[last.id] -= 1; else delete state.items[last.id]; updateDisplay() }
     function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0,9); updateDisplay() }
     function pressBackspace() { if (!state.depositStr) return; state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
@@ -293,6 +269,18 @@
           if (count > 0) { badgeEl.textContent = count; badgeEl.style.display = 'flex' } else { badgeEl.textContent = ''; badgeEl.style.display = 'none' }
         }
       });
+
+      // クリアボタンは合計がゼロのときは控えめに
+      const clearHeaderBtn = document.getElementById('clear-all');
+      if (clearHeaderBtn) {
+        if (state.total === 0 && Object.keys(state.items).length === 0) {
+          clearHeaderBtn.style.opacity = '0.45';
+          clearHeaderBtn.disabled = true;
+        } else {
+          clearHeaderBtn.style.opacity = '0.95';
+          clearHeaderBtn.disabled = false;
+        }
+      }
     }
 
     // settings modal
@@ -317,7 +305,7 @@
     }
 
     function addSettingRow() { state.tempProducts.push({ id: generateId(), name: '', price: 100, style: 'normal' }); renderSettingsList() }
-    function resetToDefaultItems() { if (confirm('商品設定を初期状態に戻しますか？')) { state.tempProducts = defaultProducts.map(p=>({ ...p })); renderSettingsList() } }
+    function resetToDefaultItems() { if (!confirm('商品設定を初期状態に戻しますか？')) return; state.tempProducts = defaultProducts.map(p=>({ ...p })); renderSettingsList() }
     function saveSettings() { const hasEmpty = state.tempProducts.some(p => !(p.name && p.name.trim())); if (hasEmpty) { alert('商品名が空の項目があります。入力するか削除してください。'); return } state.products = state.tempProducts.map(p=>({ ...p })); saveProductsToStorage(state.products); renderTicketButtons(); resetAll(); closeSettings() }
 
     // wire up controls
@@ -328,12 +316,10 @@
       document.getElementById('add-setting').addEventListener('click', addSettingRow);
       document.getElementById('reset-default').addEventListener('click', resetToDefaultItems);
       document.getElementById('save-settings').addEventListener('click', saveSettings);
+      document.getElementById('undo-last').addEventListener('click', undoLastItem);
 
-      // clear & undo in action column
-      const clearBtn = document.getElementById('clear-all');
-      const undoBtn = document.getElementById('undo-last');
-      if (clearBtn) clearBtn.addEventListener('click', () => { resetAll() });
-      if (undoBtn) undoBtn.addEventListener('click', undoLastItem);
+      // クリアはヘッダーのボタン（短押しで即時クリア）
+      document.getElementById('clear-all').addEventListener('click', () => { resetAll() });
 
       window.addEventListener('keydown', (e) => {
         if (e.key >= '0' && e.key <= '9') { if (els.settingsModal.style.display === 'flex') return; pressNum(e.key) }
