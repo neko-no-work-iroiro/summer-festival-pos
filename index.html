@@ -27,11 +27,11 @@
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
     /* チケットエリア */
-    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+    .tickets-section{flex:1.3;display:flex;flex-direction:column;min-height:0;overflow:hidden}
     .tickets-header-row{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 2px 4px;margin-bottom:2px;gap:8px}
     .tickets-header{font-size:0.75rem;color:#999;font-weight:500}
 
-    /* 共通アクションボタン（クリア・もどす）のサイズ・並びを統一 */
+    /* 共通アクションボタンベース */
     .btn-action-small{
       padding: 4px 10px;
       font-size: 0.8rem;
@@ -54,12 +54,16 @@
     }
     .btn-clear-action:active{ opacity: .8; }
 
-    /* もどすボタン（緑） */
+    /* もどすボタン（背景なし・文字大きめ） */
     .btn-undo-action{
-      background: #00838f;
-      color: #fff;
+      background: transparent;
+      font-size: 1.3rem;
+      padding: 0 4px;
+      min-width: auto;
+      height: auto;
+      opacity: 0.8;
     }
-    .btn-undo-action:active{ background-color: #00565f; }
+    .btn-undo-action:active{ opacity: 1; transform: scale(0.92); }
    
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr;padding:0 4px}
 
@@ -74,7 +78,7 @@
     .badge{display:none;position:absolute;top:2px;right:2px;background:#ff1744;color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 2px;display:flex;justify-content:center;align-items:center;line-height:1;z-index:2}
 
     /* テンキーエリア */
-    .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
+    .keypad-section{flex:0.9;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
     .keypad-header{font-size:0.75rem;color:#999;font-weight:500;padding:2px 8px 4px}
     .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;flex:1;min-height:0}
     .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
@@ -310,7 +314,6 @@
       els.settingsList.innerHTML = '';
       const frag = document.createDocumentFragment();
 
-      // 種別の選択肢（表示名と内部値のマッピング）
       const styleOptions = [
         { value: 'normal', label: '標準' },
         { value: 'special', label: '特別' },
