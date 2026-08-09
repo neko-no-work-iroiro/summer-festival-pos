@@ -26,21 +26,20 @@
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
     .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-    .tickets-header{font-size:0.75rem;color:#999;font-weight:500;padding:4px 8px 2px;margin-bottom:2px}
+    .tickets-header-row{display:flex;justify-content:space-between;align-items:center;padding:4px 8px 2px 4px;margin-bottom:2px;gap:8px}
+    .tickets-header{font-size:0.75rem;color:#999;font-weight:500}
+    .btn-undo-header{padding:2px 8px;font-size:0.75rem;background:#ccc;color:#555;border:0;border-radius:4px;cursor:pointer;font-weight:500}
+    .btn-undo-header:active{opacity:.8}
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr;padding:0 4px}
 
-    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center}
+    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
     .btn-item:active{background-color:#115293}
     .btn-item.special{background:#00838f}.btn-item.special:active{background-color:#00565f}
     .btn-item.full-width{grid-column:span 2}
     .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
     .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 4px;border-radius:3px;white-space:nowrap}
 
-    .badge{display:none;position:absolute;top:-8px;right:-8px;background:#ff1744;color:#fff;font-size:0.7rem;font-weight:700;min-width:20px;height:20px;border-radius:10px;padding:0 3px;display:flex;justify-content:center;align-items:center;line-height:1.2;z-index:1}
-
-    .menu-undo{display:flex;gap:8px;padding:4px 4px 0;align-items:center}
-    .btn-undo-floating{width:44px;height:44px;border-radius:22px;background:#ffffff;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;color:#d32f2f;font-size:1.3rem;font-weight:bold;cursor:pointer;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-    .btn-undo-floating:active{transform:translateY(1px);opacity:0.95}
+    .badge{display:none;position:absolute;top:2px;right:2px;background:#ff1744;color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 2px;display:flex;justify-content:center;align-items:center;line-height:1;z-index:2}
 
     .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
     .keypad-header{font-size:0.75rem;color:#999;font-weight:500;padding:2px 8px 4px}
@@ -107,14 +106,12 @@
 
   <!-- 商品チケットエリア -->
   <div class="tickets-section">
-    <div class="tickets-header">チケット</div>
+    <div class="tickets-header-row">
+      <div class="tickets-header">チケット</div>
+      <button id="undo-last" class="btn-undo-header" title="1つ取消" aria-label="1つ取消">もどす</button>
+    </div>
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
-    </div>
-
-    <!-- メニューリストの下に配置された小さな取り消しボタン -->
-    <div class="menu-undo">
-      <button id="undo-last" class="btn-undo-floating" title="1つ取消" aria-label="1つ取消">↩</button>
     </div>
   </div>
 
