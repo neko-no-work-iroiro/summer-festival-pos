@@ -27,8 +27,8 @@
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
     /* チケットエリア */
-    .tickets-section{flex:1.3;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-    .tickets-header-row{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 2px 4px;margin-bottom:2px;gap:8px}
+    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+    .tickets-header-row{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 2px 4px;margin-bottom:2px}
     .tickets-header{font-size:0.75rem;color:#999;font-weight:500}
 
     /* 共通アクションボタンベース */
@@ -53,32 +53,89 @@
       color: #fff;
     }
     .btn-clear-action:active{ opacity: .8; }
-
-    /* もどすボタン（背景なし・文字大きめ） */
-    .btn-undo-action{
-      background: transparent;
-      font-size: 1.3rem;
-      padding: 0 4px;
-      min-width: auto;
-      height: auto;
-      opacity: 0.8;
-    }
-    .btn-undo-action:active{ opacity: 1; transform: scale(0.92); }
    
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr;padding:0 4px}
 
-    /* 商品チケットボタン */
-    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
-    .btn-item:active{background-color:#115293}
-    .btn-item.special{background:#00838f}.btn-item.special:active{background-color:#00565f}
-    .btn-item.full-width{grid-column:span 2}
-    .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
-    .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 4px;border-radius:3px;white-space:nowrap}
+    /* 商品カード (左:-, 中央:商品情報, 右:+) */
+    .item-card {
+      position: relative;
+      background: #1976d2;
+      color: #fff;
+      border-radius: 6px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+    }
+    .item-card.special { background: #00838f; }
+    .item-card.full-width { grid-column: span 2; }
 
-    .badge{display:none;position:absolute;top:2px;right:2px;background:#ff1744;color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 2px;display:flex;justify-content:center;align-items:center;line-height:1;z-index:2}
+    /* ステッパーコントロール (-, + ボタン) */
+    .btn-step {
+      background: rgba(0, 0, 0, 0.15);
+      color: #fff;
+      border: none;
+      width: 32px; /* 幅を少しスリム化して中央エリアを拡大 */
+      font-size: 1.1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.1s;
+    }
+    .btn-step:active { background: rgba(0, 0, 0, 0.35); }
+    
+    /* 個数が0の時は「マイナス」ボタンを薄く表示 */
+    .btn-minus.disabled {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* 右側の＋ボタンを非表示にし、中央領域を右端まで広げる */
+    .btn-plus {
+      display: none;
+    }
+
+
+    /* 中央メインコンテンツエリア */
+    .item-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2px;
+      min-width: 0;
+      cursor: pointer;
+      text-align: center;
+    }
+    .item-content:active {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .item-name {
+      font-size: 0.75rem; /* サイズ調整 */
+      font-weight: bold;
+      width: 100%;
+      line-height: 1.15;
+      word-break: break-all;
+      /* 2行まで自動で折り返し表示 */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .price-tag {
+      font-size: 0.65rem;
+      font-weight: 400;
+      opacity: 0.9;
+      margin-top: 1px;
+    }
+
+    .badge{display:none;position:absolute;top:2px;right:2px;background:#ff1744;color:#fff;font-size:0.65rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 2px;display:flex;justify-content:center;align-items:center;line-height:1;z-index:2;pointer-events:none}
 
     /* テンキーエリア */
-    .keypad-section{flex:0.9;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
+    .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
     .keypad-header{font-size:0.75rem;color:#999;font-weight:500;padding:2px 8px 4px}
     .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;flex:1;min-height:0}
     .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
@@ -140,7 +197,6 @@
   <div class="tickets-section">
     <div class="tickets-header-row">
       <div class="tickets-header">チケット</div>
-      <button id="undo-last" class="btn-action-small btn-undo-action" title="1つ取消" aria-label="1つ取消">↩️</button>
     </div>
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
@@ -201,7 +257,6 @@
       total: 0,
       depositStr: '',
       items: {},
-      history: [],
       tempProducts: []
     };
 
@@ -230,14 +285,26 @@
       els.ticketGrid.innerHTML = '';
       const frag = document.createDocumentFragment();
       state.products.forEach(prod => {
-        const btn = document.createElement('button');
-        const classes = ['btn-item'];
+        const card = document.createElement('div');
+        const classes = ['item-card'];
         if (prod.style === 'special') classes.push('special');
         if (prod.style === 'full') classes.push('special', 'full-width');
-        btn.className = classes.join(' ');
-        btn.type = 'button';
-        btn.setAttribute('data-id', prod.id);
-        btn.setAttribute('data-price', String(prod.price));
+        card.className = classes.join(' ');
+
+        // マイナスボタン
+        const btnMinus = document.createElement('button');
+        btnMinus.type = 'button';
+        btnMinus.className = 'btn-step btn-minus disabled';
+        btnMinus.textContent = 'ー';
+        btnMinus.id = 'minus-' + prod.id;
+        btnMinus.addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeItem(prod.id, prod.price);
+        });
+
+        // 中央：商品情報
+        const content = document.createElement('div');
+        content.className = 'item-content';
 
         const nameSpan = document.createElement('span');
         nameSpan.className = 'item-name';
@@ -247,16 +314,31 @@
         priceSpan.className = 'price-tag';
         priceSpan.textContent = `${prod.price}円`;
 
+        content.appendChild(nameSpan);
+        content.appendChild(priceSpan);
+        content.addEventListener('click', () => addItem(prod.id, prod.price));
+
+        // プラスボタン
+        const btnPlus = document.createElement('button');
+        btnPlus.type = 'button';
+        btnPlus.className = 'btn-step btn-plus';
+        btnPlus.textContent = '＋';
+        btnPlus.addEventListener('click', (e) => {
+          e.stopPropagation();
+          addItem(prod.id, prod.price);
+        });
+
+        // バッジ
         const badge = document.createElement('div');
         badge.className = 'badge';
         badge.id = 'badge-' + prod.id;
 
-        btn.appendChild(nameSpan);
-        btn.appendChild(priceSpan);
-        btn.appendChild(badge);
+        card.appendChild(btnMinus);
+        card.appendChild(content);
+        card.appendChild(btnPlus);
+        card.appendChild(badge);
 
-        btn.addEventListener('click', () => addItem(prod.id, prod.price));
-        frag.appendChild(btn);
+        frag.appendChild(card);
       });
       els.ticketGrid.appendChild(frag);
     }
@@ -284,11 +366,39 @@
     }
 
     // core actions
-    function addItem(id, price) { state.total += Number(price) || 0; state.items[id] = (state.items[id] || 0) + 1; state.history.push({ id, price: Number(price) || 0 }); updateDisplay() }
-    function undoLastItem() { const last = state.history.pop(); if (!last) return; state.total -= last.price; if (state.items[last.id] > 1) state.items[last.id] -= 1; else delete state.items[last.id]; updateDisplay() }
-    function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0, 9); updateDisplay() }
-    function pressBackspace() { if (!state.depositStr) return; state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
-    function resetAll() { state.total = 0; state.depositStr = ''; state.items = {}; state.history = []; updateDisplay() }
+    function addItem(id, price) {
+      state.total += Number(price) || 0;
+      state.items[id] = (state.items[id] || 0) + 1;
+      updateDisplay();
+    }
+
+    function removeItem(id, price) {
+      if (!state.items[id] || state.items[id] <= 0) return;
+      state.total -= Number(price) || 0;
+      state.items[id] -= 1;
+      if (state.items[id] === 0) delete state.items[id];
+      updateDisplay();
+    }
+
+    function pressNum(num) {
+      if (state.depositStr === '' && (num === '0' || num === '00')) return;
+      state.depositStr += num;
+      if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0, 9);
+      updateDisplay();
+    }
+
+    function pressBackspace() {
+      if (!state.depositStr) return;
+      state.depositStr = state.depositStr.slice(0,-1);
+      updateDisplay();
+    }
+
+    function resetAll() {
+      state.total = 0;
+      state.depositStr = '';
+      state.items = {};
+      updateDisplay();
+    }
 
     function updateDisplay() {
       els.totalPrice.textContent = formatNum(Math.max(0, state.total));
@@ -299,9 +409,24 @@
 
       state.products.forEach(prod => {
         const badgeEl = document.getElementById('badge-' + prod.id);
+        const minusEl = document.getElementById('minus-' + prod.id);
         const count = state.items[prod.id] || 0;
+
+        // バッジ更新
         if (badgeEl) {
-          if (count > 0) { badgeEl.textContent = count; badgeEl.style.display = 'flex' } else { badgeEl.textContent = ''; badgeEl.style.display = 'none' }
+          if (count > 0) {
+            badgeEl.textContent = count;
+            badgeEl.style.display = 'flex';
+          } else {
+            badgeEl.textContent = '';
+            badgeEl.style.display = 'none';
+          }
+        }
+
+        // マイナスボタンの有効化/無効化表示
+        if (minusEl) {
+          if (count > 0) minusEl.classList.remove('disabled');
+          else minusEl.classList.add('disabled');
         }
       });
     }
@@ -357,7 +482,6 @@
       document.getElementById('add-setting').addEventListener('click', addSettingRow);
       document.getElementById('reset-default').addEventListener('click', resetToDefaultItems);
       document.getElementById('save-settings').addEventListener('click', saveSettings);
-      document.getElementById('undo-last').addEventListener('click', undoLastItem);
       document.getElementById('clear-all').addEventListener('click', () => { resetAll() });
 
       window.addEventListener('keydown', (e) => {
