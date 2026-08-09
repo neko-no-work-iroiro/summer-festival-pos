@@ -25,8 +25,8 @@
     .price-row .label{text-align:left}.price-row .value{text-align:right;padding-right:6px;font-variant-numeric:tabular-nums}.price-row .unit{text-align:right}
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
-    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:4px;position:relative}
-    .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;height:100%;align-content:stretch;grid-auto-rows:1fr}
+    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:4px}
+    .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr}
 
     .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center}
     .btn-item:active{background-color:#115293}
@@ -47,8 +47,8 @@
     .btn-undo-wide{width:100%;background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:1rem;font-weight:bold;padding:12px 0;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06)}
     .btn-undo-wide:active{background:#fff0f0}
 
-    /* 小型の丸い取り消しボタン（右下に浮かせる） */
-    .btn-undo-floating{position:absolute;right:10px;bottom:10px;width:44px;height:44px;border-radius:22px;background:#ffffff;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#d32f2f;box-shadow:0 6px 14px rgba(0,0,0,0.08);cursor:pointer}
+    /* 小型の丸い取り消しボタン（メニュー下に配置） */
+    .btn-undo-floating{align-self:flex-end;margin-top:8px;width:44px;height:44px;border-radius:22px;background:#ffffff;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#d32f2f;box-shadow:0 6px 14px rgba(0,0,0,0.08);cursor:pointer}
     .btn-undo-floating:active{transform:translateY(1px);opacity:0.95}
 
     .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
@@ -114,7 +114,7 @@
       <!-- JavaScriptで動的に生成 -->
     </div>
 
-    <!-- 右下に浮かせた小さな取り消しボタン -->
+    <!-- メニューリストの下に配置された小さな取り消しボタン -->
     <button id="undo-last" class="btn-undo-floating" title="1つ取消" aria-label="1つ取消">↩</button>
   </div>
 
