@@ -25,8 +25,9 @@
     .price-row .label{text-align:left}.price-row .value{text-align:right;padding-right:6px;font-variant-numeric:tabular-nums}.price-row .unit{text-align:right}
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
-    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:4px}
-    .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr}
+    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+    .tickets-header{font-size:0.75rem;color:#999;font-weight:500;padding:4px 8px 2px;margin-bottom:2px}
+    .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr;padding:0 4px}
 
     .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center}
     .btn-item:active{background-color:#115293}
@@ -35,21 +36,17 @@
     .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
     .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 4px;border-radius:3px;white-space:nowrap}
 
-    .badge{display:none;position:absolute;top:-6px;right:-6px;background:#ff1744;color:#fff;font-size:0.75rem;font-weight:700;min-width:22px;height:22px;border-radius:11px;padding:0 4px;display:flex;justify-content:center;align-items:center}
+    .badge{display:none;position:absolute;top:-8px;right:-8px;background:#ff1744;color:#fff;font-size:0.7rem;font-weight:700;min-width:20px;height:20px;border-radius:10px;padding:0 3px;display:flex;justify-content:center;align-items:center;line-height:1.2;z-index:1}
 
-    .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;min-height:0}
-    .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;height:100%}
+    .menu-undo{display:flex;gap:8px;padding:4px 4px 0;align-items:center}
+    .btn-undo-floating{width:44px;height:44px;border-radius:22px;background:#ffffff;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;color:#d32f2f;font-size:1.3rem;font-weight:bold;cursor:pointer;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+    .btn-undo-floating:active{transform:translateY(1px);opacity:0.95}
+
+    .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;min-height:0}
+    .keypad-header{font-size:0.75rem;color:#999;font-weight:500;padding:2px 8px 4px}
+    .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;flex:1;min-height:0}
     .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
     .btn-key:active{background:#e0e0e0}.btn-key.action{background:#eceff1;font-size:.95rem}
-
-    /* 幅広の取り消しボタン（メニュー下部） */
-    .menu-undo{margin-top:8px}
-    .btn-undo-wide{width:100%;background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:1rem;font-weight:bold;padding:12px 0;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-    .btn-undo-wide:active{background:#fff0f0}
-
-    /* 小型の丸い取り消しボタン（メニュー下に配置） */
-    .btn-undo-floating{align-self:flex-end;margin-top:8px;width:44px;height:44px;border-radius:22px;background:#ffffff;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#d32f2f;box-shadow:0 6px 14px rgba(0,0,0,0.08);cursor:pointer}
-    .btn-undo-floating:active{transform:translateY(1px);opacity:0.95}
 
     .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .btn-clear:active{opacity:.9}
@@ -110,16 +107,20 @@
 
   <!-- 商品チケットエリア -->
   <div class="tickets-section">
+    <div class="tickets-header">チケット</div>
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
     </div>
 
     <!-- メニューリストの下に配置された小さな取り消しボタン -->
-    <button id="undo-last" class="btn-undo-floating" title="1つ取消" aria-label="1つ取消">↩</button>
+    <div class="menu-undo">
+      <button id="undo-last" class="btn-undo-floating" title="1つ取消" aria-label="1つ取消">↩</button>
+    </div>
   </div>
 
   <!-- お預り金入力用テンキー -->
   <div class="keypad-section">
+    <div class="keypad-header">おつり計算</div>
     <div class="keypad-grid" id="keypad-grid">
       <!-- JSで生成 -->
     </div>
@@ -256,7 +257,7 @@
     // core actions
     function addItem(id, price) { state.total += Number(price) || 0; state.items[id] = (state.items[id] || 0) + 1; state.history.push({ id, price: Number(price) || 0 }); updateDisplay() }
     function undoLastItem() { const last = state.history.pop(); if (!last) return; state.total -= last.price; if (state.items[last.id] > 1) state.items[last.id] -= 1; else delete state.items[last.id]; updateDisplay() }
-    function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
+    function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0, 9); updateDisplay() }
     function pressBackspace() { if (!state.depositStr) return; state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
     function resetAll() { state.total = 0; state.depositStr = ''; state.items = {}; state.history = []; updateDisplay() }
 
@@ -289,10 +290,10 @@
         const row = document.createElement('div');
         row.className = 'setting-item-row';
 
-        const nameInput = document.createElement('input'); nameInput.type = 'text'; nameInput.className = 'setting-input'; nameInput.value = prod.name; nameInput.placeholder = '商品名'; nameInput.addEventListener('input', (e) => { prod.name = e.target.value })
-        const priceInput = document.createElement('input'); priceInput.type = 'number'; priceInput.className = 'setting-input'; priceInput.value = prod.price; priceInput.min = 0; priceInput.placeholder = '価格'; priceInput.addEventListener('input', (e) => { prod.price = safeParseInt(e.target.value) })
-        const select = document.createElement('select'); select.className = 'setting-select'; ['normal','special','full'].forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; if (prod.style === opt) o.selected = true; select.appendChild(o) }); select.addEventListener('change', (e) => { prod.style = e.target.value })
-        const delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.type = 'button'; delBtn.textContent = '✕'; delBtn.addEventListener('click', () => { state.tempProducts.splice(idx,1); renderSettingsList() })
+        const nameInput = document.createElement('input'); nameInput.type = 'text'; nameInput.className = 'setting-input'; nameInput.value = prod.name; nameInput.placeholder = '商品名'; nameInput.addEventListener('change', (e) => { state.tempProducts[idx].name = e.target.value });
+        const priceInput = document.createElement('input'); priceInput.type = 'number'; priceInput.className = 'setting-input'; priceInput.value = prod.price; priceInput.min = 0; priceInput.placeholder = '価格'; priceInput.addEventListener('change', (e) => { state.tempProducts[idx].price = safeParseInt(e.target.value) });
+        const select = document.createElement('select'); select.className = 'setting-select'; ['normal','special','full'].forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; select.appendChild(o) }); select.value = prod.style; select.addEventListener('change', (e) => { state.tempProducts[idx].style = e.target.value });
+        const delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.type = 'button'; delBtn.textContent = '✕'; delBtn.addEventListener('click', () => { state.tempProducts.splice(idx, 1); renderSettingsList() });
 
         row.appendChild(nameInput); row.appendChild(priceInput); row.appendChild(select); row.appendChild(delBtn); frag.appendChild(row);
       });
@@ -301,7 +302,7 @@
 
     function addSettingRow() { state.tempProducts.push({ id: generateId(), name: '', price: 100, style: 'normal' }); renderSettingsList() }
     function resetToDefaultItems() { if (!confirm('商品設定を初期状態に戻しますか？')) return; state.tempProducts = defaultProducts.map(p=>({ ...p })); renderSettingsList() }
-    function saveSettings() { const hasEmpty = state.tempProducts.some(p => !(p.name && p.name.trim())); if (hasEmpty) { alert('商品名が空の項目があります。入力するか削除してください'); return } state.products = state.tempProducts.map(p=>({ ...p })); saveProductsToStorage(state.products); closeSettings(); renderTicketButtons(); updateDisplay() }
+    function saveSettings() { const hasEmpty = state.tempProducts.some(p => !(p.name && p.name.trim())); if (hasEmpty) { alert('商品名が空の項目があります。入力するか削除してください'); return } state.products = state.tempProducts.map(p => ({ ...p })); saveProductsToStorage(state.products); renderTicketButtons(); closeSettings() }
 
     // wire up controls
     function bindControls() {
