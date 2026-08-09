@@ -1,445 +1,142 @@
-<!DOCTYPE html> 
-<html lang="ja"> 
-<head> 
-  <meta charset="UTF-8"> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-  <meta name="apple-mobile-web-app-capable" content="yes"> 
-  <meta name="mobile-web-app-capable" content="yes"> 
-   
-  <title>夏祭り チケット会計</title> 
-  <style> 
-    /* ベーススタイル・画面全体の固定 */
-    * {  
-      box-sizing: border-box;  
-      margin: 0;  
-      padding: 0;  
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;  
-      user-select: none;  
-      touch-action: manipulation; 
-    } 
- 
-    html, body { 
-      height: 100dvh; 
-      overflow: hidden; 
-    } 
- 
-    body {  
-      padding: 8px;  
-      background: #f4f6f8;  
-      display: flex;  
-      flex-direction: column;  
-      gap: 6px;  
-    } 
- 
-    /* ヘッダーエリア */
-    .header {
-      position: relative; 
-      display: flex;
-      justify-content: center; 
-      align-items: center;
-      flex-shrink: 0;
-      padding: 2px 0;
-    }
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>夏祭り チケット会計</title>
+  <style>
+    /* 最小限に整理したスタイル（見た目・挙動は維持） */
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;user-select:none;touch-action:manipulation}
+    html,body{height:100dvh;overflow:hidden}
+    body{padding:8px;background:#f4f6f8;display:flex;flex-direction:column;gap:6px}
 
-    h1 { 
-      font-size: 0.9rem; 
-      color: #333; 
-      margin: 0; 
-      text-align: center; 
-    } 
-    
-    .btn-settings {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: none;
-      font-size: 1.2rem;
-      padding: 0 4px;
-      cursor: pointer;
-      line-height: 1;
-      opacity: 0.7;
-    }
+    .header{position:relative;display:flex;justify-content:center;align-items:center;flex-shrink:0;padding:2px 0}
+    h1{font-size:0.9rem;color:#333;text-align:center}
+    .btn-settings{position:absolute;right:0;top:50%;transform:translateY(-50%);background:transparent;border:0;font-size:1.2rem;padding:0 4px;cursor:pointer;line-height:1;opacity:.7}
+    .btn-settings:active{opacity:1}
 
-    .btn-settings:active {
-      opacity: 1;
-      transform: translateY(-50%);
-    }
-     
-    /* 金額表示エリア */
-    .display {  
-      background: #fff;  
-      padding: 10px 12px;  
-      border-radius: 8px;  
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);  
-      flex-shrink: 0;  
-    } 
-     
-    .price-row {  
-      display: grid;  
-      grid-template-columns: 85px 1fr auto;  
-      align-items: center;  
-      font-size: 1.25rem;  
-      font-weight: bold;  
-      padding: 2px 0;  
-    } 
- 
-    .price-row .label { text-align: left; } 
-    .price-row .value {  
-      text-align: right;  
-      padding-right: 6px;  
-      font-variant-numeric: tabular-nums;  
-    } 
-    .price-row .unit { text-align: right; } 
- 
-    .total-row { color: #d32f2f; } 
-    .deposit-row { color: #1976d2; border-top: 1px dashed #eee; margin-top: 2px; padding-top: 2px; } 
-    .change-row { color: #2e7d32; font-size: 1.25rem; } 
- 
-    /* 商品ボタン配置エリア */
-    .tickets-section { 
-      flex: 1.5; 
-      display: flex; 
-      min-height: 0; 
-      overflow: hidden; 
-      padding: 4px; 
-    } 
-    
-    .ticket-grid { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 6px; 
-      width: 100%; 
-      height: 100%; 
-      align-content: stretch; 
-      grid-auto-rows: 1fr; /* ボタン数に応じて高さを自動均等分配 */
-    } 
-     
-    /* 商品ボタンの個別スタイル */
-    .btn-item {  
-      position: relative; 
-      background: #1976d2;  
-      color: #fff;  
-      border: none;  
-      border-radius: 6px;  
-      font-size: 0.85rem;  
-      font-weight: bold;  
-      padding: 0 8px;  
-      display: flex;  
-      justify-content: space-between;  
-      align-items: center;  
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
-      cursor: pointer;  
-      min-height: 0; 
-      height: 100%; 
-      overflow: visible; 
-    } 
+    .display{background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);flex-shrink:0}
+    .price-row{display:grid;grid-template-columns:85px 1fr auto;align-items:center;font-size:1.25rem;font-weight:bold;padding:2px 0}
+    .price-row .label{text-align:left}.price-row .value{text-align:right;padding-right:6px;font-variant-numeric:tabular-nums}.price-row .unit{text-align:right}
+    .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
-    .btn-item:active { 
-      background-color: #115293; 
-      transform: none; 
-    } 
+    .tickets-section{flex:1.5;display:flex;min-height:0;overflow:hidden;padding:4px}
+    .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;height:100%;align-content:stretch;grid-auto-rows:1fr}
 
-    .btn-item.special:active { 
-      background-color: #00565f; 
-      transform: none; 
-    }
+    .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;height:100%}
+    .btn-item:active{background-color:#115293}
+    .btn-item.special{background:#00838f}.btn-item.special:active{background-color:#00565f}
+    .btn-item.full-width{grid-column:span 2}
+    .btn-item .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:4px}
+    .btn-item .price-tag{font-size:0.75rem;font-weight:400;background:rgba(255,255,255,.25);padding:1px 4px;border-radius:3px;white-space:nowrap}
 
-    .btn-item span.item-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      margin-right: 4px;
-    }
-     
-    .btn-item.special { background: #00838f; } 
-    .btn-item.full-width { grid-column: span 2; } 
-    .btn-item span.price-tag { font-size: 0.75rem; font-weight: normal; background: rgba(255,255,255,0.25); padding: 1px 4px; border-radius: 3px; white-space: nowrap; } 
- 
-    /* 注文数のバッジ表示（右上の赤丸） */
-    .badge { 
-      display: none; 
-      position: absolute; 
-      top: -6px; 
-      right: -6px; 
-      background: #ff1744; 
-      color: #fff; 
-      font-size: 0.75rem; 
-      font-weight: bold; 
-      min-width: 22px; 
-      height: 22px; 
-      border-radius: 11px; 
-      padding: 0 4px; 
-      justify-content: center; 
-      align-items: center; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3); 
-      border: 2px solid #fff; 
-      z-index: 10; 
-      pointer-events: none; 
-    } 
- 
-    /* テンキーエリア */
-    .keypad-section { flex: 0.7; background: #fff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; min-height: 0; } 
-    .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%; height: 100%; } 
-    
-    .btn-key {  
-      background: #f8f9fa;  
-      color: #333;  
-      border: 1px solid #ccc;  
-      border-radius: 6px;  
-      font-size: 1.1rem;  
-      font-weight: bold;  
-      display: flex;  
-      justify-content: center;  
-      align-items: center;  
-      cursor: pointer;  
-      height: 100%; 
-    } 
+    .badge{display:none;position:absolute;top:-6px;right:-6px;background:#ff1744;color:#fff;font-size:0.75rem;font-weight:700;min-width:22px;height:22px;border-radius:11px;padding:0 4px;display:flex;justify-content:center;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,.3);border:2px solid #fff;z-index:10;pointer-events:none}
 
-    .btn-key:active { background: #e0e0e0; } 
-    .btn-key.action { background: #eceff1; font-size: 0.95rem; } 
- 
-    /* 画面下部の操作ボタン（取消・クリア） */
-    .bottom-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0; } 
-    
-    .btn-undo-bottom {  
-      background: #ffffff;  
-      color: #d32f2f;  
-      border: 2px solid #d32f2f;  
-      border-radius: 6px;  
-      font-size: 0.9rem;  
-      font-weight: bold;  
-      padding: 8px 0;  
-      cursor: pointer;  
-      text-align: center;  
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
-    } 
+    .keypad-section{flex:0.7;background:#fff;padding:5px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);display:flex;min-height:0}
+    .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:100%;height:100%}
+    .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
+    .btn-key:active{background:#e0e0e0}.btn-key.action{background:#eceff1;font-size:.95rem}
 
-    .btn-undo-bottom:active { background: #fff0f0; } 
-     
-    .btn-clear {  
-      background: #d32f2f;  
-      color: #fff;  
-      border: none;  
-      border-radius: 6px;  
-      font-size: 0.9rem;  
-      font-weight: bold;  
-      padding: 8px 0;  
-      cursor: pointer;  
-      text-align: center;  
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);  
-    } 
+    .bottom-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0}
+    .btn-undo-bottom{background:#fff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+    .btn-undo-bottom:active{background:#fff0f0}
+    .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+    .btn-clear:active{opacity:.9}
 
-    .btn-clear:active { opacity: 0.9; } 
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;justify-content:center;align-items:center;padding:12px}
+    .modal-content{background:#fff;border-radius:8px;width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+    .modal-header{padding:12px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;font-weight:bold}
+    .modal-body{padding:12px;overflow-y:auto;flex:1}.modal-footer{padding:10px 12px;border-top:1px solid #eee;display:flex;justify-content:space-between;gap:8px}
 
-    /* 商品設定モーダルダイアログ */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 100;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
-    }
+    .setting-item-row{display:grid;grid-template-columns:1fr 80px 45px 35px;gap:6px;margin-bottom:8px;align-items:center}
+    .setting-input{padding:6px;border:1px solid #ccc;border-radius:4px;font-size:.85rem;user-select:text}
+    .setting-select{padding:6px 2px;border:1px solid #ccc;border-radius:4px;font-size:.75rem}
+    .btn-del{background:#ff5252;color:#fff;border:0;border-radius:4px;padding:6px;font-size:.8rem;cursor:pointer}
+    .btn-add{width:100%;padding:8px;background:#e8f5e9;color:#2e7d32;border:1px dashed #2e7d32;border-radius:4px;font-weight:700;cursor:pointer;margin-top:6px}
+    .btn-save{background:#1976d2;color:#fff;border:0;border-radius:4px;padding:8px 16px;font-weight:700;cursor:pointer}
+    .btn-cancel{background:#ccc;color:#333;border:0;border-radius:4px;padding:8px 16px;font-weight:700;cursor:pointer}
+    .btn-reset{background:#fff;color:#d32f2f;border:1px solid #d32f2f;border-radius:4px;padding:8px 12px;font-size:.8rem;cursor:pointer}
+  </style>
+</head>
+<body>
 
-    .modal-content {
-      background: #fff;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .modal-header {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-    }
-
-    .modal-body {
-      padding: 12px;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .modal-footer {
-      padding: 10px 12px;
-      border-top: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .setting-item-row {
-      display: grid;
-      grid-template-columns: 1fr 80px 45px 35px;
-      gap: 6px;
-      margin-bottom: 8px;
-      align-items: center;
-    }
-
-    .setting-input {
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      user-select: text;
-    }
-
-    .setting-select {
-      padding: 6px 2px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.75rem;
-    }
-
-    .btn-del {
-      background: #ff5252;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .btn-add {
-      width: 100%;
-      padding: 8px;
-      background: #e8f5e9;
-      color: #2e7d32;
-      border: 1px dashed #2e7d32;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-
-    .btn-save {
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn-cancel {
-      background: #ccc;
-      color: #333;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn-reset {
-      background: #fff;
-      color: #d32f2f;
-      border: 1px solid #d32f2f;
-      border-radius: 4px;
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-  </style> 
-</head> 
-<body> 
- 
   <!-- ヘッダー -->
   <div class="header">
-    <h1>🍧 夏祭り チケット会計 🍧</h1> 
-    <button class="btn-settings" onclick="openSettings()" title="商品設定">⚙️</button>
+    <h1>🍧 夏祭り チケット会計 🍧</h1>
+    <button id="open-settings" class="btn-settings" title="商品設定" aria-label="商品設定">⚙️</button>
   </div>
- 
+
   <!-- 表示部（お会計・お預り・おつり） -->
-  <div class="display"> 
-    <div class="price-row total-row"> 
-      <span class="label">お会計:</span> 
-      <span class="value" id="total-price">0</span> 
-      <span class="unit">円</span> 
-    </div> 
-     
-    <div class="price-row deposit-row"> 
-      <span class="label">お預り:</span> 
-      <span class="value" id="deposit-price">0</span> 
-      <span class="unit">円</span> 
-    </div> 
-     
-    <div class="price-row change-row"> 
-      <span class="label">おつり:</span> 
-      <span class="value" id="change-price">0</span> 
-      <span class="unit">円</span> 
-    </div> 
-  </div> 
- 
+  <div class="display">
+    <div class="price-row total-row">
+      <span class="label">お会計:</span>
+      <span class="value" id="total-price">0</span>
+      <span class="unit">円</span>
+    </div>
+
+    <div class="price-row deposit-row">
+      <span class="label">お預り:</span>
+      <span class="value" id="deposit-price">0</span>
+      <span class="unit">円</span>
+    </div>
+
+    <div class="price-row change-row">
+      <span class="label">おつり:</span>
+      <span class="value" id="change-price">0</span>
+      <span class="unit">円</span>
+    </div>
+  </div>
+
   <!-- 商品チケットエリア -->
-  <div class="tickets-section"> 
+  <div class="tickets-section">
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
-    </div> 
-  </div> 
- 
+    </div>
+  </div>
+
   <!-- お預り金入力用テンキー -->
-  <div class="keypad-section"> 
-    <div class="keypad-grid"> 
-      <button class="btn-key" onclick="pressNum('7')">7</button> 
-      <button class="btn-key" onclick="pressNum('8')">8</button> 
-      <button class="btn-key" onclick="pressNum('9')">9</button> 
-      <button class="btn-key" onclick="pressNum('4')">4</button> 
-      <button class="btn-key" onclick="pressNum('5')">5</button> 
-      <button class="btn-key" onclick="pressNum('6')">6</button> 
-      <button class="btn-key" onclick="pressNum('1')">1</button> 
-      <button class="btn-key" onclick="pressNum('2')">2</button> 
-      <button class="btn-key" onclick="pressNum('3')">3</button> 
-      <button class="btn-key" onclick="pressNum('0')">0</button> 
-      <button class="btn-key" onclick="pressNum('00')">00</button> 
-      <button class="btn-key action" onclick="pressBackspace()">⌫</button> 
-    </div> 
-  </div> 
- 
+  <div class="keypad-section">
+    <div class="keypad-grid" id="keypad-grid">
+      <!-- JSで生成 -->
+    </div>
+  </div>
+
   <!-- 操作ボタン -->
-  <div class="bottom-actions"> 
-    <button class="btn-undo-bottom" onclick="undoLastItem()">↩ 1つ取消</button> 
-    <button class="btn-clear" onclick="resetAll()">クリア</button> 
-  </div> 
+  <div class="bottom-actions">
+    <button id="undo-last" class="btn-undo-bottom">↩ 1つ取消</button>
+    <button id="clear-all" class="btn-clear">クリア</button>
+  </div>
 
   <!-- 設定モーダル（初期非表示） -->
-  <div class="modal-overlay" id="settings-modal">
-    <div class="modal-content">
+  <div class="modal-overlay" id="settings-modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <div class="modal-header">
-        <span>⚙️ 商品メニュー設定</span>
-        <button class="btn-cancel" style="padding: 2px 8px;" onclick="closeSettings()">✕</button>
+        <span id="settings-title">⚙️ 商品メニュー設定</span>
+        <button class="btn-cancel" style="padding: 2px 8px;" id="close-settings" aria-label="閉じる">✕</button>
       </div>
       <div class="modal-body">
-        <div id="settings-list">
-          <!-- JavaScriptで動的に生成 -->
-        </div>
-        <button class="btn-add" onclick="addSettingRow()">＋ 新しい商品を追加</button>
+        <div id="settings-list"></div>
+        <button id="add-setting" class="btn-add">＋ 新しい商品を追加</button>
       </div>
       <div class="modal-footer">
-        <button class="btn-reset" onclick="resetToDefaultItems()">標準に戻す</button>
+        <button id="reset-default" class="btn-reset">標準に戻す</button>
         <div>
-          <button class="btn-cancel" onclick="closeSettings()">キャンセル</button>
-          <button class="btn-save" onclick="saveSettings()">保存</button>
+          <button id="cancel-settings" class="btn-cancel">キャンセル</button>
+          <button id="save-settings" class="btn-save">保存</button>
         </div>
       </div>
     </div>
   </div>
- 
-  <script> 
-    // マスタデータの初期値
+
+  <script>
+  (function () {
+    'use strict';
+
+    const LS_KEY = 'matsuri_products_v1';
+    const nf = new Intl.NumberFormat('ja-JP');
+
     const defaultProducts = [
       { id: 'item1', name: 'やきとり 2本', price: 100, style: 'normal' },
       { id: 'item2', name: 'やきとり 4本', price: 200, style: 'normal' },
@@ -452,212 +149,164 @@
       { id: 'item9', name: '共通50円 ×10枚つづり', price: 500, style: 'full' }
     ];
 
-    // アプリケーションの状態管理用変数
-    let products = [];      // 有効な商品一覧
-    let total = 0;          // 合計金額
-    let depositStr = "";    // 入力中の預り金文字列
-    let items = {};         // 商品ごとの購入数（例: { item1: 2 }）
-    let history = [];       // 操作履歴（1つ取消用）
+    // state
+    const state = {
+      products: [],
+      total: 0,
+      depositStr: '',
+      items: {},
+      history: [],
+      tempProducts: []
+    };
 
-    // アプリケーションの初期化
-    function init() {
-      const savedProducts = localStorage.getItem('matsuri_products');
-      if (savedProducts) {
-        try {
-          products = JSON.parse(savedProducts);
-        } catch(e) {
-          products = [...defaultProducts];
-        }
-      } else {
-        products = [...defaultProducts];
-      }
-      renderTicketButtons();
-      resetAll();
-    }
+    // elements cache
+    const els = {
+      ticketGrid: document.getElementById('ticket-grid'),
+      totalPrice: document.getElementById('total-price'),
+      depositPrice: document.getElementById('deposit-price'),
+      changePrice: document.getElementById('change-price'),
+      keypadGrid: document.getElementById('keypad-grid'),
+      settingsModal: document.getElementById('settings-modal'),
+      settingsList: document.getElementById('settings-list')
+    };
 
-    // 商品ボタンの一覧描画
+    // utils
+    function safeParseInt(val) { const n = parseInt(String(val || '').replace(/\D+/g, ''), 10); return Number.isFinite(n) ? n : 0 }
+    function formatNum(n) { return nf.format(n) }
+    function generateId() { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); return 'id_' + Date.now() + '_' + Math.floor(Math.random() * 10000) }
+
+    // storage
+    function loadProducts() { try { const raw = localStorage.getItem(LS_KEY); if (!raw) return [...defaultProducts]; const parsed = JSON.parse(raw); if (!Array.isArray(parsed)) return [...defaultProducts]; return parsed } catch (e) { return [...defaultProducts] } }
+    function saveProductsToStorage(list) { try { localStorage.setItem(LS_KEY, JSON.stringify(list)) } catch (e) { /* ignore */ } }
+
+    // render ticket buttons
     function renderTicketButtons() {
-      const grid = document.getElementById('ticket-grid');
-      grid.innerHTML = '';
-
-      products.forEach(prod => {
+      els.ticketGrid.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      state.products.forEach(prod => {
         const btn = document.createElement('button');
-        let classNames = 'btn-item';
-        if (prod.style === 'special') classNames += ' special';
-        if (prod.style === 'full') classNames += ' special full-width';
-        
-        btn.className = classNames;
-        btn.onclick = () => addItem(prod.id, prod.price);
+        const classes = ['btn-item'];
+        if (prod.style === 'special') classes.push('special');
+        if (prod.style === 'full') classes.push('special', 'full-width');
+        btn.className = classes.join(' ');
+        btn.type = 'button';
+        btn.setAttribute('data-id', prod.id);
+        btn.setAttribute('data-price', String(prod.price));
 
-        btn.innerHTML = `
-          <span class="item-name">${escapeHtml(prod.name)}</span>
-          <span class="price-tag">${prod.price}円</span>
-          <div class="badge" id="badge-${prod.id}"></div>
-        `;
-        grid.appendChild(btn);
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'item-name';
+        nameSpan.textContent = prod.name;
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'price-tag';
+        priceSpan.textContent = `${prod.price}円`;
+
+        const badge = document.createElement('div');
+        badge.className = 'badge';
+        badge.id = 'badge-' + prod.id;
+
+        btn.appendChild(nameSpan);
+        btn.appendChild(priceSpan);
+        btn.appendChild(badge);
+
+        btn.addEventListener('click', () => addItem(prod.id, prod.price));
+        frag.appendChild(btn);
       });
+      els.ticketGrid.appendChild(frag);
     }
 
-    // エスケープ処理（XSS対策）
-    function escapeHtml(str) {
-      return str.replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    // keypad
+    function renderKeypad() {
+      const keys = ['7','8','9','4','5','6','1','2','3','0','00','back'];
+      const frag = document.createDocumentFragment();
+      keys.forEach(k => {
+        const b = document.createElement('button');
+        b.className = 'btn-key';
+        b.type = 'button';
+        if (k === 'back') {
+          b.classList.add('action');
+          b.textContent = '⌫';
+          b.addEventListener('click', pressBackspace);
+        } else {
+          b.textContent = k;
+          if (k === '00') b.addEventListener('click', () => pressNum('00'));
+          else b.addEventListener('click', () => pressNum(k));
+        }
+        frag.appendChild(b);
       });
+      els.keypadGrid.appendChild(frag);
     }
- 
-    // 商品追加処理
-    function addItem(id, price) { 
-      total += price; 
-      items[id] = (items[id] || 0) + 1; 
-      history.push({ id: id, price: price }); 
-      updateDisplay(); 
-    } 
- 
-    // 直前の購入履歴を削除（1つ取消）
-    function undoLastItem() { 
-      if (history.length === 0) return; 
-       
-      let lastItem = history.pop(); 
-      total -= lastItem.price; 
-       
-      if (items[lastItem.id] > 1) { 
-        items[lastItem.id] -= 1; 
-      } else { 
-        delete items[lastItem.id]; 
-      } 
-       
-      updateDisplay(); 
-    } 
- 
-    // テンキーによるお預り金入力
-    function pressNum(num) { 
-      if (depositStr === "" && (num === "0" || num === "00")) return; 
-      depositStr += num; 
-      updateDisplay(); 
-    } 
- 
-    // お預り金の1文字消去（バックスペース）
-    function pressBackspace() { 
-      depositStr = depositStr.slice(0, -1); 
-      updateDisplay(); 
-    } 
- 
-    // 会計データの全リセット
-    function resetAll() { 
-      total = 0; 
-      depositStr = ""; 
-      items = {}; 
-      history = []; 
-      updateDisplay(); 
-    } 
- 
-    // 画面表示更新（合計・預り金・おつり・購入数バッジ）
-    function updateDisplay() { 
-      document.getElementById('total-price').innerText = total.toLocaleString(); 
-       
-      let depositVal = depositStr === "" ? 0 : parseInt(depositStr, 10); 
-      document.getElementById('deposit-price').innerText = depositVal.toLocaleString(); 
-       
-      let change = depositVal - total; 
-      document.getElementById('change-price').innerText = (depositVal >= total && total > 0) ? change.toLocaleString() : 0; 
 
-      // 商品ボタン上の購入数バッジ表示切り替え
-      products.forEach(prod => {
-        let count = items[prod.id] || 0; 
-        let badgeEl = document.getElementById('badge-' + prod.id); 
-         
+    // core actions
+    function addItem(id, price) { state.total += Number(price) || 0; state.items[id] = (state.items[id] || 0) + 1; state.history.push({ id, price: Number(price) || 0 }); updateDisplay() }
+    function undoLastItem() { const last = state.history.pop(); if (!last) return; state.total -= last.price; if (state.items[last.id] > 1) state.items[last.id] -= 1; else delete state.items[last.id]; updateDisplay() }
+    function pressNum(num) { if (state.depositStr === '' && (num === '0' || num === '00')) return; state.depositStr += num; if (state.depositStr.length > 9) state.depositStr = state.depositStr.slice(0,9); updateDisplay() }
+    function pressBackspace() { if (!state.depositStr) return; state.depositStr = state.depositStr.slice(0,-1); updateDisplay() }
+    function resetAll() { state.total = 0; state.depositStr = ''; state.items = {}; state.history = []; updateDisplay() }
+
+    function updateDisplay() {
+      els.totalPrice.textContent = formatNum(Math.max(0, state.total));
+      const depositVal = state.depositStr === '' ? 0 : safeParseInt(state.depositStr);
+      els.depositPrice.textContent = formatNum(depositVal);
+      const change = depositVal - state.total;
+      els.changePrice.textContent = (depositVal >= state.total && state.total > 0) ? formatNum(change) : '0';
+
+      state.products.forEach(prod => {
+        const badgeEl = document.getElementById('badge-' + prod.id);
+        const count = state.items[prod.id] || 0;
         if (badgeEl) {
-          if (count > 0) { 
-            badgeEl.innerText = count; 
-            badgeEl.style.display = 'flex'; 
-          } else { 
-            badgeEl.innerText = ''; 
-            badgeEl.style.display = 'none'; 
-          } 
+          if (count > 0) { badgeEl.textContent = count; badgeEl.style.display = 'flex' } else { badgeEl.textContent = ''; badgeEl.style.display = 'none' }
         }
       });
-    } 
-
-    // モーダル設定用の一時保持データ
-    let tempProducts = [];
-
-    // 設定モーダルの表示
-    function openSettings() {
-      tempProducts = JSON.parse(JSON.stringify(products));
-      renderSettingsList();
-      document.getElementById('settings-modal').style.display = 'flex';
     }
 
-    // 設定モーダルを閉じる
-    function closeSettings() {
-      document.getElementById('settings-modal').style.display = 'none';
-    }
+    // settings modal
+    function openSettings() { state.tempProducts = state.products.map(p => ({ ...p })); renderSettingsList(); els.settingsModal.style.display = 'flex'; els.settingsModal.setAttribute('aria-hidden','false') }
+    function closeSettings() { els.settingsModal.style.display = 'none'; els.settingsModal.setAttribute('aria-hidden','true') }
 
-    // 設定モーダル内の編集リスト描画
     function renderSettingsList() {
-      const container = document.getElementById('settings-list');
-      container.innerHTML = '';
-
-      tempProducts.forEach((prod, index) => {
+      els.settingsList.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      state.tempProducts.forEach((prod, idx) => {
         const row = document.createElement('div');
         row.className = 'setting-item-row';
-        row.innerHTML = `
-          <input type="text" class="setting-input" value="${escapeHtml(prod.name)}" placeholder="商品名" onchange="updateTempItem(${index}, 'name', this.value)">
-          <input type="number" class="setting-input" value="${prod.price}" placeholder="価格" onchange="updateTempItem(${index}, 'price', parseInt(this.value, 10) || 0)">
-          <select class="setting-select" onchange="updateTempItem(${index}, 'style', this.value)">
-            <option value="normal" ${prod.style === 'normal' ? 'selected' : ''}>通常</option>
-            <option value="special" ${prod.style === 'special' ? 'selected' : ''}>色付</option>
-            <option value="full" ${prod.style === 'full' ? 'selected' : ''}>幅広</option>
-          </select>
-          <button class="btn-del" onclick="removeSettingRow(${index})">✕</button>
-        `;
-        container.appendChild(row);
+
+        const nameInput = document.createElement('input'); nameInput.type = 'text'; nameInput.className = 'setting-input'; nameInput.value = prod.name; nameInput.placeholder = '商品名'; nameInput.addEventListener('input', e => { state.tempProducts[idx].name = e.target.value });
+        const priceInput = document.createElement('input'); priceInput.type = 'number'; priceInput.className = 'setting-input'; priceInput.value = prod.price; priceInput.min = 0; priceInput.placeholder = '価格'; priceInput.addEventListener('input', e => { const v = safeParseInt(e.target.value); state.tempProducts[idx].price = v; e.target.value = v });
+        const select = document.createElement('select'); select.className = 'setting-select'; ['normal','special','full'].forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt === 'normal' ? '通常' : (opt === 'special' ? '色付' : '幅広'); if (prod.style === opt) o.selected = true; select.appendChild(o) }); select.addEventListener('change', e => { state.tempProducts[idx].style = e.target.value });
+        const delBtn = document.createElement('button'); delBtn.className = 'btn-del'; delBtn.type = 'button'; delBtn.textContent = '✕'; delBtn.addEventListener('click', () => { state.tempProducts.splice(idx,1); renderSettingsList() });
+
+        row.appendChild(nameInput); row.appendChild(priceInput); row.appendChild(select); row.appendChild(delBtn); frag.appendChild(row);
       });
+      els.settingsList.appendChild(frag);
     }
 
-    // 設定一時データの更新
-    function updateTempItem(index, key, value) {
-      tempProducts[index][key] = value;
+    function addSettingRow() { state.tempProducts.push({ id: generateId(), name: '', price: 100, style: 'normal' }); renderSettingsList() }
+    function resetToDefaultItems() { if (!confirm('商品設定を初期状態に戻しますか？')) return; state.tempProducts = defaultProducts.map(p=>({ ...p })); renderSettingsList() }
+    function saveSettings() { const hasEmpty = state.tempProducts.some(p => !(p.name && p.name.trim())); if (hasEmpty) { alert('商品名が空の項目があります。入力するか削除してください。'); return } state.products = state.tempProducts.map(p=>({ ...p })); saveProductsToStorage(state.products); renderTicketButtons(); resetAll(); closeSettings() }
+
+    // wire up controls
+    function bindControls() {
+      document.getElementById('open-settings').addEventListener('click', openSettings);
+      document.getElementById('close-settings').addEventListener('click', closeSettings);
+      document.getElementById('cancel-settings').addEventListener('click', closeSettings);
+      document.getElementById('add-setting').addEventListener('click', addSettingRow);
+      document.getElementById('reset-default').addEventListener('click', resetToDefaultItems);
+      document.getElementById('save-settings').addEventListener('click', saveSettings);
+      document.getElementById('undo-last').addEventListener('click', undoLastItem);
+      document.getElementById('clear-all').addEventListener('click', () => { if (confirm('会計データをクリアしますか？')) resetAll() });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key >= '0' && e.key <= '9') { if (els.settingsModal.style.display === 'flex') return; pressNum(e.key) }
+        else if (e.key === 'Backspace') { if (els.settingsModal.style.display === 'flex') return; pressBackspace() }
+      });
+
+      els.settingsModal.addEventListener('click', (e) => { if (e.target === els.settingsModal) closeSettings() });
     }
 
-    // 設定モーダルに新規商品行を追加
-    function addSettingRow() {
-      const newId = 'item_' + Date.now();
-      tempProducts.push({ id: newId, name: '', price: 100, style: 'normal' });
-      renderSettingsList();
-    }
-
-    // 設定モーダルから指定行を削除
-    function removeSettingRow(index) {
-      tempProducts.splice(index, 1);
-      renderSettingsList();
-    }
-
-    // 設定の初期化（デフォルトデータに戻す）
-    function resetToDefaultItems() {
-      if (confirm('商品設定を初期状態に戻しますか？')) {
-        tempProducts = JSON.parse(JSON.stringify(defaultProducts));
-        renderSettingsList();
-      }
-    }
-
-    // 編集した設定の保存と画面更新
-    function saveSettings() {
-      const hasEmpty = tempProducts.some(p => !p.name.trim());
-      if (hasEmpty) {
-        alert('商品名が空の項目があります。入力するか削除してください。');
-        return;
-      }
-
-      products = JSON.parse(JSON.stringify(tempProducts));
-      localStorage.setItem('matsuri_products', JSON.stringify(products));
-      renderTicketButtons();
-      resetAll();
-      closeSettings();
-    }
-
-    // 画面ロード時に初期化を実行
-    init();
-  </script> 
-</body> 
+    function init() { state.products = loadProducts(); renderKeypad(); renderTicketButtons(); bindControls(); updateDisplay() }
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+  </script>
+</body>
 </html>
