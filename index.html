@@ -12,17 +12,20 @@
     html,body{height:100dvh;overflow:hidden}
     body{padding:8px;background:#f4f6f8;display:flex;flex-direction:column;gap:6px}
 
-    .header{position:relative;display:flex;justify-content:center;align-items:center;flex-shrink:0;padding:2px 0}
+    /* ヘッダー：左に設定、中央にタイトル、右にクリア */
+    .header{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding:2px 0}
+    .header .left,.header .center,.header .right{display:flex;align-items:center}
+    .header .center{flex:1;justify-content:center}
     h1{font-size:0.9rem;color:#333;text-align:center}
-    .btn-settings{position:absolute;right:0;top:50%;transform:translateY(-50%);background:transparent;border:0;font-size:1.2rem;padding:0 4px;cursor:pointer;line-height:1;opacity:.7}
-    .btn-settings:active{opacity:1}
+    .btn-settings,.btn-clear-header{background:transparent;border:0;font-size:1.2rem;padding:0 8px;cursor:pointer;line-height:1;opacity:.9}
+    .btn-settings:active,.btn-clear-header:active{opacity:1}
 
     .display{background:#fff;padding:10px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);flex-shrink:0}
     .price-row{display:grid;grid-template-columns:85px 1fr auto;align-items:center;font-size:1.25rem;font-weight:bold;padding:2px 0}
     .price-row .label{text-align:left}.price-row .value{text-align:right;padding-right:6px;font-variant-numeric:tabular-nums}.price-row .unit{text-align:right}
     .total-row{color:#d32f2f}.deposit-row{color:#1976d2;border-top:1px dashed #eee;margin-top:2px;padding-top:2px}.change-row{color:#2e7d32;font-size:1.25rem}
 
-    .tickets-section{flex:1.5;display:flex;min-height:0;overflow:hidden;padding:4px}
+    .tickets-section{flex:1.5;display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:4px}
     .ticket-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;height:100%;align-content:stretch;grid-auto-rows:1fr}
 
     .btn-item{position:relative;background:#1976d2;color:#fff;border:0;border-radius:6px;font-size:0.85rem;font-weight:bold;padding:0 8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;height:100%}
@@ -39,9 +42,11 @@
     .btn-key{background:#f8f9fa;color:#333;border:1px solid #ccc;border-radius:6px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:center;align-items:center;cursor:pointer;height:100%}
     .btn-key:active{background:#e0e0e0}.btn-key.action{background:#eceff1;font-size:.95rem}
 
-    .bottom-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0}
-    .btn-undo-bottom{background:#fff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-    .btn-undo-bottom:active{background:#fff0f0}
+    /* 幅広の取り消しボタン（メニュー下部） */
+    .menu-undo{margin-top:8px}
+    .btn-undo-wide{width:100%;background:#ffffff;color:#d32f2f;border:2px solid #d32f2f;border-radius:6px;font-size:1rem;font-weight:bold;padding:12px 0;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .btn-undo-wide:active{background:#fff0f0}
+
     .btn-clear{background:#d32f2f;color:#fff;border:0;border-radius:6px;font-size:.9rem;font-weight:bold;padding:8px 0;cursor:pointer;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .btn-clear:active{opacity:.9}
 
@@ -62,10 +67,17 @@
 </head>
 <body>
 
-  <!-- ヘッダー -->
+  <!-- ヘッダー：左に設定、中央にタイトル、右にクリア -->
   <div class="header">
-    <h1>🍧 夏祭り チケット会計 🍧</h1>
-    <button id="open-settings" class="btn-settings" title="商品設定" aria-label="商品設定">⚙️</button>
+    <div class="left">
+      <button id="open-settings" class="btn-settings" title="商品設定" aria-label="商品設定">⚙️</button>
+    </div>
+    <div class="center">
+      <h1>🍧 夏祭り チケット会計 🍧</h1>
+    </div>
+    <div class="right">
+      <button id="clear-all" class="btn-clear-header" title="クリア" aria-label="クリア">クリア</button>
+    </div>
   </div>
 
   <!-- 表示部（お会計・お預り・おつり） -->
@@ -94,6 +106,11 @@
     <div class="ticket-grid" id="ticket-grid">
       <!-- JavaScriptで動的に生成 -->
     </div>
+
+    <!-- メニューエリア下部の幅広取り消しボタン -->
+    <div class="menu-undo">
+      <button id="undo-last" class="btn-undo-wide">↩ 1つ取消</button>
+    </div>
   </div>
 
   <!-- お預り金入力用テンキー -->
@@ -101,12 +118,6 @@
     <div class="keypad-grid" id="keypad-grid">
       <!-- JSで生成 -->
     </div>
-  </div>
-
-  <!-- 操作ボタン -->
-  <div class="bottom-actions">
-    <button id="undo-last" class="btn-undo-bottom">↩ 1つ取消</button>
-    <button id="clear-all" class="btn-clear">クリア</button>
   </div>
 
   <!-- 設定モーダル（初期非表示） -->
@@ -258,6 +269,18 @@
           if (count > 0) { badgeEl.textContent = count; badgeEl.style.display = 'flex' } else { badgeEl.textContent = ''; badgeEl.style.display = 'none' }
         }
       });
+
+      // クリアボタンは合計がゼロのときは控えめに
+      const clearHeaderBtn = document.getElementById('clear-all');
+      if (clearHeaderBtn) {
+        if (state.total === 0 && Object.keys(state.items).length === 0) {
+          clearHeaderBtn.style.opacity = '0.45';
+          clearHeaderBtn.disabled = true;
+        } else {
+          clearHeaderBtn.style.opacity = '0.95';
+          clearHeaderBtn.disabled = false;
+        }
+      }
     }
 
     // settings modal
@@ -294,6 +317,8 @@
       document.getElementById('reset-default').addEventListener('click', resetToDefaultItems);
       document.getElementById('save-settings').addEventListener('click', saveSettings);
       document.getElementById('undo-last').addEventListener('click', undoLastItem);
+
+      // クリアはヘッダーのボタン（短押しで即時クリア）
       document.getElementById('clear-all').addEventListener('click', () => { resetAll() });
 
       window.addEventListener('keydown', (e) => {
